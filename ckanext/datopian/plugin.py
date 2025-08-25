@@ -1,6 +1,5 @@
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
-import ckan.controllers.group as group_controller
 from flask import Blueprint, render_template
 
 
@@ -10,8 +9,9 @@ def hello_plugin():
 
 class DatopianPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
-    plugins.implements(plugins.IBlueprint)
     plugins.implements(plugins.IRoutes)
+    plugins.implements(plugins.IBlueprint)
+   
 
     # IConfigurer
 
