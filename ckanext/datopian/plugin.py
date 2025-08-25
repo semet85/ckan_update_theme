@@ -33,3 +33,32 @@ class DatopianPlugin(plugins.SingletonPlugin):
     def get_blueprint(self):
         # Kembalikan blueprint untuk CKAN
         return [insight_blueprint]
+
+# ICommand 
+class DatopianPlugin(plugins.SingletonPlugin):
+    plugins.implements(plugins.IConfigurer)
+    plugins.implements(plugins.IBlueprint)
+    plugins.implements(plugins.ICommand)
+
+    def update_config(self, config):
+        toolkit.add_template_directory(config, "templates")
+        toolkit.add_public_directory(config, "public")
+        toolkit.add_resource("fanstatic", "datopian")
+
+    def get_blueprint(self):
+        return [insight_blueprint]
+
+    def get_commands(self):
+        from . import commands
+        return [commands.insight]
+    
+    @insight_blueprint.route("/insight")
+    def insight_index():
+        groups = (
+            model.Session.query(model.Group)
+            .filter(model.Group.state == "active")
+            .filter(model.Group.extras.any(key="insight", value="true"))
+            .all()
+    )
+        return render_template("insight/index.html", groups=groups)
+

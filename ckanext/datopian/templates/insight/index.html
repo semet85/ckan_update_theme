@@ -1,20 +1,27 @@
 {% extends "page.html" %}
-
 {% block page_title %}Data Insight{% endblock %}
 
 {% block content %}
   <h1>Data Insight</h1>
-  {% if groups %}
-    <ul>
-      {% for group in groups %}
-        <li>
-          <a href="{{ h.url_for('group.read', id=group.name) }}">
-            {{ group.display_name }}
-          </a>
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>Tidak ada group dengan extras Insight.</p>
-  {% endif %}
+  <div id="insight-list">
+    {% include "insight/list.html" %}
+  </div>
+
+  <script>
+    function fetchInsight() {
+      fetch('{{ h.url_for("insight.insight_index") }}')
+        .then(response => response.text())
+        .then(html => {
+          // Ambil bagian daftar group dari response
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = html;
+          const newList = tempDiv.querySelector('#insight-list').innerHTML;
+          document.getElementById('insight-list').innerHTML = newList;
+        })
+        .catch(err => console.error('Fetch Insight error:', err));
+    }
+
+    // Refresh setiap 30 detik
+    setInterval(fetchInsight, 30000);
+  </script>
 {% endblock %}
