@@ -1,0 +1,53 @@
+<footer class="site-footer">
+  <div class="container">
+    {% block footer_content %}
+    <div class="row">
+      <div class="col-md-8 footer-links">
+        {% block footer_nav %}
+          
+          <ul class="list-unstyled">
+            {% block footer_links_ckan %}
+              <!-- {% set api_url = 'http://docs.ckan.org/en/{0}/api/'.format(g.ckan_doc_version) %} -->
+              <!-- <li><a href="{{ api_url }}">{{ _('CKAN API') }}</a></li> -->
+              <li><a href="/about">{{ _('Tentang Satu Data ORAS') }}</a></li>
+              <li><a href="https://diskominfo.boltimkab.go.id" target="_blank">Built by<br/> <img src="{{ h.url_for_static('/base/images/diskominfo.png') }}" width="150" alt="diskominfo.boltimkab.go.id"></a></li>
+              <li><a href="https://boltimkab.go.id/beranda" target="_blank"><img src="{{ h.url_for_static('/base/images/portal_boltim.png') }}" width="150" alt="boltimkab/beranda.go.id"></a></li>
+              <li><a href="https://boltimkab.go.id/" target="_blank"><img src="{{ h.url_for_static('/base/images/LOGO_BOLTIM_BANGKIT.png') }}" width="150" alt="boltimkab.go.id"></a></li>
+            {% endblock %}
+          </ul>
+        {% endblock %}
+      </div>
+      <div class="col-md-4 attribution">
+          {% block footer_attribution %}
+            {% set logo_url = h.url_for_static('/base/images/logo_sdi.png') %}
+            {% set logo_sulut = h.url_for_static('/base/images/satudata_sulut.png') %}
+
+            <div style="display: flex; align-items: center; gap: 20px;">
+              <span>
+                {% trans %}<strong>Powered by</strong>{% endtrans %}
+              </span>
+              <a href="https://data.go.id/" target="_blank">
+                <img src="{{ logo_url }}" width="150" alt="data.go.id">
+              </a>
+              <a href="https://satudata.sulutprov.go.id/" target="_blank">
+                <img src="{{ logo_sulut }}" width="150" alt="satudata.sulutprov.go.id">
+              </a>
+            </div>
+          {% endblock %}
+
+
+          {% block footer_lang %}
+            {% snippet "snippets/language_selector.html" %}
+          {% endblock %}
+      </div>
+
+    </div>
+    {% endblock %}
+  </div>
+
+  {% block footer_debug %}
+    {% if g.debug %}
+      {% include 'snippets/debug.html' %}
+    {% endif %}
+  {% endblock %}
+</footer>

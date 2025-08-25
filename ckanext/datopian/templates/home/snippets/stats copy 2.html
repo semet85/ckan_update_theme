@@ -1,0 +1,103 @@
+{% set stats = h.get_site_statistics() %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<div class="stats-wrapper">
+  <h2 class="stats-title text-center mb-4"> <i class="fas fa-chart-bar"></i> Statistik</h2>
+
+  <div class="stats-grid">
+
+    <!-- Dataset Card -->
+    <a href="{{ h.url_for('dataset.search') }}" class="stat-card dataset">
+      <i class="fa fa-database icon"></i>
+      <div class="stat-number">{{ h.SI_number_span(stats.dataset_count) }}</div>
+      <div class="stat-label">{{ _('Dataset') if stats.dataset_count == 1 else _('Datasets') }}</div>
+    </a>
+
+    <!-- Organisasi Card -->
+    <a href="{{ h.url_for('organization.index') }}" class="stat-card organization">
+      <i class="fa fa-building icon"></i>
+      <div class="stat-number">{{ h.SI_number_span(stats.organization_count) }}</div>
+      <div class="stat-label">{{ _('ORGANISASI PERANGKAT DAERAH') if stats.organization_count == 1 else _('Organisasi') }}</div>
+    </a>
+
+    <!-- Kategori Card -->
+    <a href="{{ h.url_for('group.index') }}" class="stat-card category">
+      <i class="fa fa-tags icon"></i>
+      <div class="stat-number">{{ h.SI_number_span(stats.group_count) }}</div>
+      <div class="stat-label">{{ _('Kategori') if stats.group_count == 1 else _('Kategori') }}</div>
+    </a>
+
+  </div>
+</div>
+
+<style>
+
+  .stats-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 20vh;
+  text-align: center;
+}
+
+.stats-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: #2c3e50;
+}
+
+.stats-grid {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: stretch;
+  gap: 20px;
+  flex-wrap: nowrap;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 220px;
+  height: 230px;
+  padding: 25px 25px;
+  border-radius: 15px;
+  color: #fff;
+  text-decoration: none;
+  transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.stat-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 20px rgba(0,0,0,0.25);
+}
+
+.dataset { background: linear-gradient(135deg, #3498db, #2980b9); }
+.organization { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+.category { background: linear-gradient(135deg, #f1c40f, #f39c12); }
+
+.stat-card .icon { font-size: 8rem;
+  margin-bottom: 15px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+.stat-card .stat-number { font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
+.stat-card .stat-label { font-size: 1.3rem; font-weight: 600; }
+
+@media (max-width: 992px) {
+  .stats-grid { flex-wrap: wrap; }
+  .stat-card { flex: 1 1 45%; max-width: 45%; margin-bottom: 20px; }
+}
+
+@media (max-width: 576px) {
+  .stat-card { flex: 1 1 100%; max-width: 100%; }
+  .stat-card .icon { font-size: 3rem; }
+  .stat-card .stat-number { font-size: 1.8rem; }
+  .stat-card .stat-label { font-size: 1.2rem; }
+  .stats-title { font-size: 1.8rem; }
+}
+
+</style>

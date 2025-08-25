@@ -1,0 +1,196 @@
+{% block header_wrapper %}
+<header class="navbar navbar-static-top masthead">
+  <div class="container">
+
+    <!-- 🔹 Baris atas: Logo + Toggle -->
+    <div class="header-top">
+      
+      <!-- Logo -->
+      <hgroup class="{{ g.header_class }} site-logo">
+        {% if g.site_logo %}
+          <a class="logo" href="{{ h.url_for('home.index') }}">
+            <img src="{{ h.url_for_static_or_external(g.site_logo) }}" alt="{{ g.site_title }}" />
+          </a>
+        {% else %}
+          <h1><a href="{{ h.url_for('home.index') }}">{{ g.site_title }}</a></h1>
+        {% endif %}
+      </hgroup>
+
+      <!-- Toggle -->
+      <button data-target="#main-navigation-toggle" data-toggle="collapse" 
+              class="navbar-toggle collapsed" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="fa fa-bars"></span>
+      </button>
+
+      <!-- 🔹 User Menu Desktop -->
+      <div class="navbar-right desktop-user">
+        {% if c.userobj %}
+          <div class="account avatar authed" data-module="me" data-me="{{ c.userobj.id }}">
+            <ul class="list-unstyled" style="margin-bottom:0;">
+              <li>
+                <a href="{{ h.url_for('user.read', id=c.userobj.name) }}" class="image">
+                  {{ h.user_image((c.user if c and c.user else ''), size=22) }}
+                  <span class="username">{{ c.userobj.display_name }}</span>
+                </a>
+              </li>
+              {% if c.userobj.sysadmin %}
+              <li><a href="{{ h.url_for(controller='admin', action='index') }}"><i class="fa fa-gavel"></i> Sysadmin</a></li>
+              {% endif %}
+              <li><a href="{{ h.url_for('user.edit', id=c.userobj.name) }}"><i class="fa fa-cog"></i> Profil</a></li>
+              <li><a href="{{ h.url_for('dashboard.index') }}"><i class="fa fa-tachometer"></i> Dashboard</a></li>
+              <li><a href="{{ h.url_for('/user/_logout') }}"><i class="fa fa-sign-out"></i> Keluar</a></li>
+            </ul>
+          </div>
+        {% else %}
+          <a href="{{ h.url_for('user.login') }}" class="btn btn-sm btn-outline-light">Login</a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- 🔹 Navigation -->
+    <div class="collapse navbar-collapse" id="main-navigation-toggle">
+      <nav class="section navigation">
+        <ul class="nav nav-pills">
+          {{ h.build_nav_main(
+            ('dataset.search', _('Dataset')),
+            ('organization.index', _('OPD')),
+            ('group.index', _('Kategori')),
+            ('home.about', _('Tentang'))
+          ) }}
+          {% if not c.userobj %}
+            <li>{% link_for _('Login'), named_route='user.login' %}</li>
+          {% endif %}
+        </ul>
+
+        <!-- 🔹 User Menu versi Mobile -->
+        {% if c.userobj %}
+        <div class="mobile-user-menu">
+          <ul class="list-unstyled">
+            <li class="user-header">
+              {{ h.user_image((c.user if c and c.user else ''), size=40) }}
+              <span class="username">{{ c.userobj.display_name }}</span>
+            </li>
+            {% if c.userobj.sysadmin %}
+              <li><a href="{{ h.url_for(controller='admin', action='index') }}"><i class="fa fa-gavel"></i> Sysadmin</a></li>
+            {% endif %}
+            <li><a href="{{ h.url_for('user.edit', id=c.userobj.name) }}"><i class="fa fa-cog"></i> Profil</a></li>
+            <li><a href="{{ h.url_for('dashboard.index') }}"><i class="fa fa-tachometer"></i> Dashboard</a></li>
+            <li><a href="{{ h.url_for('/user/_logout') }}"><i class="fa fa-sign-out"></i> Keluar</a></li>
+          </ul>
+        </div>
+        {% endif %}
+      </nav>
+    </div>
+
+  </div>
+</header>
+
+<style>
+  header.masthead {
+    position: fixed;
+    top: 0; left: 0; width: 100%;
+    z-index: 1030;
+    padding: 8px 0;
+    background: #535353;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+  }
+  body { padding-top: 65px; }
+
+  header.masthead.scrolled {
+    background: #3c3c3c;
+    padding: 5px 0;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.3);
+  }
+
+  header.masthead img { max-height: 40px; transition: max-height 0.3s ease; }
+  header.masthead.scrolled img { max-height: 33px; }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .navbar-toggle {
+    border: none;
+    background: transparent;
+    font-size: 22px;
+    color: #fff;
+    padding: 5px 8px;
+    margin: 0;
+  }
+
+  .desktop-user .username { color: #fff; font-weight: 500; margin-left: 6px; }
+
+  /* 🔹 Mobile user menu dengan animasi */
+  .mobile-user-menu {
+    background: rgba(255,255,255,0.08);
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 6px;
+    transform: translateY(-15px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.35s ease;
+  }
+  .navbar-collapse.in .mobile-user-menu {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+  }
+  .mobile-user-menu a {
+    display: block;
+    padding: 6px 0;
+    color: #f5f5f5;
+    transition: padding-left 0.2s;
+  }
+  .mobile-user-menu a:hover {
+    color: #ffd966;
+    padding-left: 5px;
+  }
+  .mobile-user-menu .user-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+  }
+  .mobile-user-menu .user-header .username {
+    color: #fff;
+    font-weight: 600;
+  }
+
+  /* Responsive */
+  .desktop-user { display: flex; align-items: center; }
+  @media (max-width: 768px) {
+    .desktop-user { display: none !important; }
+    .site-logo img { max-height: 35px; }
+  }
+  @media (min-width: 769px) {
+    .mobile-user-menu { display: none !important; }
+  }
+
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Ambil link OPD / organization.index
+  const opdLink = document.querySelector('ul.nav a[href*="/organization"]');
+  if(opdLink) {
+    opdLink.setAttribute('title', 'Organisasi Perangkat Daerah');
+  }
+});
+
+<script>
+  window.addEventListener("scroll", function() {
+    var header = document.querySelector("header.masthead");
+    if (header) {
+      header.classList.toggle("scrolled", window.scrollY > 50);
+    }
+  });
+</script>
+{% endblock %}

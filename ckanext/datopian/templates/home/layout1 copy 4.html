@@ -1,0 +1,424 @@
+<div role="main" class="hero">
+  <div class="container">
+    <div class="row row1">
+      <div class="col-md-12">
+        {% block search %}
+          {% snippet 'home/snippets/search.html' %}
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="container">
+    <div class="row row2">
+      <div class="col-md-12">
+        {% block stats %}
+          {% snippet 'home/snippets/stats.html' %}
+        {% endblock %}
+      </div>
+    </div>  
+  </div>
+</div>
+
+<div class="main">
+  <div class="container">
+    <h2 class="text-center mb-4"> <i class="fas fa-building"></i> Kategori & Organisasi </h2>
+    <div class="row row3">
+      <div class="col-md-6 col1">
+        {% block featured_group %}
+          {% snippet 'home/snippets/featured_group.html' %}
+        {% endblock %}
+      </div>
+      <div class="col-md-6 col2">
+        {% block featured_organization %}
+          {% snippet 'home/snippets/featured_organization.html' %}
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="container">
+    <div class="row row4">
+      <div class="col-md-12">
+        {% block group_list %}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+        <h2 class="text-center mb-4"> <i class="fas fa-folder-open"></i> Topik Data</h2>
+        {% set groups = h.get_featured_groups(count=10) %}
+        {% if not groups %}
+          <p class="text-center">{{ _('Tidak ada kategori yang ditemukan.') }}</p>
+        {% else %}
+        <div class="group-carousel">
+          <button class="carousel-btn left-btn">&#10094;</button>
+          <div class="carousel-track-wrapper">
+            <div class="carousel-track">
+              {% for group in groups %}
+              <div class="group-card">
+                <a href="{{ h.url_for(controller='group', action='read', id=group.name) }}">
+                  <img src="{{ group.image_display_url or h.url_for_static('/base/images/placeholder-group.png') }}" alt="{{ group.title }}">
+                  <h5>{{ group.title }}</h5>
+                </a>
+              </div>
+              {% endfor %}
+              <!-- Duplikasi untuk infinite scroll -->
+              {% for group in groups %}
+              <div class="group-card">
+                <a href="{{ h.url_for(controller='group', action='read', id=group.name) }}">
+                  <img src="{{ group.image_display_url or h.url_for_static('/base/images/placeholder-group.png') }}" alt="{{ group.title }}">
+                  <h5>{{ group.title }}</h5>
+                </a>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          <button class="carousel-btn right-btn">&#10095;</button>
+        </div>
+        {% endif %}
+
+        <style>
+        .group-carousel {
+          position: relative;
+          overflow: hidden;
+          width: 100%;
+        }
+        .carousel-track-wrapper {
+          overflow: hidden;
+        }
+        .carousel-track {
+          display: flex;
+          transition: transform 0.5s linear;
+        }
+        .group-carousel:hover .carousel-track {
+          animation-play-state: paused;
+        }
+        .group-card {
+          min-width: 200px;
+          margin: 0 10px;
+          text-align: center;
+          flex-shrink: 0;
+        }
+        .group-card img {
+          width: 100%;
+          height: 155px;
+          object-fit: cover;
+          border-radius: 5px;
+        }
+        .carousel-btn {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          background: rgba(0,0,0,0.5);
+          color: #fff;
+          border: none;
+          font-size: 24px;
+          padding: 5px 10px;
+          cursor: pointer;
+          z-index: 10;
+        }
+        .left-btn { left: 5px; }
+        .right-btn { right: 5px; }
+
+        /* Responsive */
+        @media(max-width: 768px) {
+          .group-card { min-width: 150px; }
+        }
+        </style>
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const track = document.querySelector('.carousel-track');
+          const cards = document.querySelectorAll('.group-card');
+          const leftBtn = document.querySelector('.left-btn');
+          const rightBtn = document.querySelector('.right-btn');
+          const totalCards = cards.length;
+          let index = 0;
+          let autoSlide;
+
+          function moveTrack() {
+            const cardWidth = cards[0].offsetWidth + 20; // width + margin
+            track.style.transform = `translateX(${-cardWidth * index}px)`;
+          }
+
+          function startAutoSlide() {
+            autoSlide = setInterval(() => {
+              index++;
+              if(index >= totalCards / 2) index = 0; // loop
+              moveTrack();
+            }, 3000);
+          }
+
+          function resetAutoSlide() {
+            clearInterval(autoSlide);
+            startAutoSlide();
+          }
+
+          leftBtn.addEventListener('click', () => {
+            index--;
+            if(index < 0) index = (totalCards / 2) - 1;
+            moveTrack();
+            resetAutoSlide();
+          });
+
+          rightBtn.addEventListener('click', () => {
+            index++;
+            if(index >= totalCards / 2) index = 0;
+            moveTrack();
+            resetAutoSlide();
+          });
+
+          // Pause on hover
+          track.parentElement.addEventListener('mouseenter', () => clearInterval(autoSlide));
+          track.parentElement.addEventListener('mouseleave', startAutoSlide);
+
+          // Inisialisasi
+          moveTrack();
+          startAutoSlide();
+
+          window.addEventListener('resize', moveTrack);
+        });
+        </script>
+
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="main">
+  <div class="container">
+    <div class="row mt-5">
+      <div class="col-12">
+        <h2 class="text-center mb-4">
+          <i class="fas fa-chart-line"></i> Statistik Website
+        </h2>
+
+        <!-- Center wrapper -->
+        <div class="stats-wrapper2">
+          <div class="stats-grid2">
+            
+            <!-- Total Pengunjung -->
+            <div class="stat-card2 text-center">
+              <i class="fas fa-user-friends"></i>
+              <h3 class="stat-number2" data-target="12345">0</h3>
+              <p class="stat-label2">Total Pengunjung</p>
+            </div>
+
+            <!-- Total Pageviews -->
+            <div class="stat-card2 text-center">
+              <i class="fas fa-file-alt"></i>
+              <h3 class="stat-number2" data-target="67890">0</h3>
+              <p class="stat-label2">Total Pageviews</p>
+            </div>
+
+            <!-- Pengunjung Hari Ini -->
+            <div class="stat-card2 text-center">
+              <i class="fas fa-calendar-day"></i>
+              <h3 class="stat-number2" data-target="123">0</h3>
+              <p class="stat-label2">Pengunjung Hari Ini</p>
+            </div>
+
+          </div>
+        </div>
+        <!-- End Center wrapper -->
+
+      </div>
+    </div>
+  </div>
+</div>
+   
+<style>
+/* Carousel Group 
+.group-carousel {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.carousel-track {
+  display: flex;
+  gap: 20px;
+  overflow: hidden;
+  scroll-behavior: smooth;
+  flex: 1;
+  padding: 10px 0;
+}
+
+.group-card {
+  flex: 0 0 200px;
+  background: #fff;
+  border-radius: 12px;
+  text-align: center;
+  padding: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  transition: transform .2s;
+}
+.group-card:hover {
+  transform: translateY(-5px);
+}
+.group-card img {
+  width: 100%;
+  height: 152px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.group-card h5 {
+  margin-top: 10px;
+  font-size: 1rem;
+  color: #333;
+}
+
+/* tombol navigasi 
+.carousel-btn {
+  background: #007bff;
+  color: #3c3c3c;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 20px;
+  z-index: 5;
+}
+.left-btn { margin-right: 10px; }
+.right-btn { margin-left: 10px; }*/
+
+/* Statistik Website */
+.stats-wrapper2 {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.stats-grid2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+  flex-wrap: wrap;
+  max-width: 900px;
+}
+
+.stat-card2 {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: #fff;
+  padding: 30px 20px;
+  border-radius: 15px;
+  width: 220px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: 0.3s;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+.stat-card2:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 20px rgba(0,0,0,0.25);
+}
+.stat-card2 i {
+  font-size: 42px;
+  margin-bottom: 15px;
+}
+.stat-number2 {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+.stat-label2 {
+  font-size: 1.2rem;
+  margin-top: 5px;
+  font-weight: 500;
+}
+
+/* Responsive stat-card2*/
+@media (max-width: 992px) {
+  .stat-card2 {
+    width: 45%;
+    height: 180px;
+  }
+}
+@media (max-width: 576px) {
+  .stat-card2 {
+    width: 100%;
+    height: auto;
+    padding: 20px;
+  }
+}
+
+/* Responsive iframe */
+.iframe-container {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 */
+  height: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.iframe-container iframe {
+  position: absolute;
+  top:0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border:0;
+}
+</style>
+
+<script>
+/* Carousel Script */
+document.addEventListener("DOMContentLoaded", function(){
+  const track = document.querySelector(".carousel-track");
+  const leftBtn = document.querySelector(".left-btn");
+  const rightBtn = document.querySelector(".right-btn");
+
+  leftBtn.addEventListener("click", () => {
+    track.scrollBy({left: -220, behavior: "smooth"});
+  });
+  rightBtn.addEventListener("click", () => {
+    track.scrollBy({left: 220, behavior: "smooth"});
+  });
+});
+
+/* Count Up Statistik Website - on scroll once */
+function animateCountUp(el, target) {
+  let start = 0;
+  const duration = 1500;
+  const stepTime = Math.abs(Math.floor(duration / target));
+  const timer = setInterval(() => {
+    start += 1;
+    el.textContent = start.toLocaleString();
+    if (start >= target) clearInterval(timer);
+  }, stepTime);
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+  const counters = document.querySelectorAll(".stat-number2");
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !entry.target.classList.contains("counted")) {
+        const target = +entry.target.getAttribute("data-target");
+        animateCountUp(entry.target, target);
+        entry.target.classList.add("counted");
+      }
+    });
+  }, { threshold: 0.5 });
+
+  counters.forEach(counter => observer.observe(counter));
+});
+</script>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LGD3KZ8K7Q"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-LGD3KZ8K7Q');
+</script>
