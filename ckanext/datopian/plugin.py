@@ -10,6 +10,7 @@ def hello_plugin():
 class DatopianPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IBlueprint)
+    plugins.implements(plugins.IRoutes,)
 
     # IConfigurer
 
@@ -29,3 +30,14 @@ class DatopianPlugin(plugins.SingletonPlugin):
         # Add plugin url rules to Blueprint object
         blueprint.add_url_rule('/hello_plugin', '/hello_plugin', hello_plugin)
         return blueprint
+    
+    def before_map(self, map):
+        controller = 'ckanext.datopian.controllers.insight:InsightController'
+        map.connect('insight_index', '/insight',
+                    controller=controller, action='index')
+        map.connect('insight_read', '/insight/{id}',
+                    controller=controller, action='read')
+        return map
+
+    def after_map(self, map):
+        return map
