@@ -1,0 +1,34 @@
+{% extends "page.html" %}
+
+{% block subtitle %}Data Insight - {{ group_dict.display_name }}{% endblock %}
+
+{% block page_primary_action %}
+  <h1 class="page-heading">{{ group_dict.display_name }}</h1>
+{% endblock %}
+
+{% block primary_content_inner %}
+  <div class="insight-description">
+    {% if group_dict.description %}
+      <p>{{ group_dict.description }}</p>
+    {% else %}
+      <p>Tidak ada deskripsi tersedia.</p>
+    {% endif %}
+  </div>
+
+  <h2>Dataset Terkait</h2>
+  {% if group_dict.packages %}
+    {% snippet "package/snippets/package_list.html", packages=group_dict.packages %}
+  {% else %}
+    <p>Tidak ada dataset untuk insight ini.</p>
+  {% endif %}
+{% endblock %}
+
+{% block extra_styles %}
+<style>
+.insight-description {
+  margin-bottom: 30px;
+  font-size: 1rem;
+  color: #333;
+}
+</style>
+{% endblock %}
