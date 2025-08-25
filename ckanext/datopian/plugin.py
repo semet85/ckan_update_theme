@@ -32,7 +32,7 @@ class DatopianPlugin(plugins.SingletonPlugin):
         blueprint.add_url_rule('/hello_plugin', '/hello_plugin', hello_plugin)
         return blueprint
 
- def before_map(self, map):
+    def before_map(self, map):
         controller = 'ckanext.datopian.controllers.insight:InsightController'
         map.connect('insight_index', '/insight',
                     controller=controller, action='index')
