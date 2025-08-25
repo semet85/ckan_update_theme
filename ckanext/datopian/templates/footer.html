@@ -1,0 +1,183 @@
+<footer class="site-footer bg-dark text-white py-4">
+  <!-- Footer atas -->
+  <div class="footer-top">
+    <div class="container footer-container">
+      
+      <!-- Kolom kiri -->
+      <div class="footer-col footer-left">
+        <div class="powered-section mb-3">
+          <span><strong>Powered by</strong></span>
+          <div class="footer-logos mt-2">
+            <p><a href="https://data.go.id/" target="_blank" style="text-decoration: none;">
+              <img src="{{ h.url_for_static('/base/images/logo_sdi.png') }}" width="100" alt="data.go.id" title="">
+            </a>
+            <a href="https://satudata.sulutprov.go.id/" target="_blank">
+              <img src="{{ h.url_for_static('/base/images/satudata_sulut.png') }}" width="100" alt="satudata.sulutprov.go.id" title="">
+            </a></p>
+            
+          </div>
+          <p><a href="/about" class="link-hover">Tentang Satu Data ORAS</a></p>
+        </div>
+        <p>{% block footer_lang %}
+          {% snippet "snippets/language_selector.html" %}
+        {% endblock %}</p>
+              
+      </div>
+
+      <!-- Kolom kanan -->
+      <div class="footer-col footer-right">
+        <!-- Logo -->
+        <div class="footer-logos mb-3">
+          <a href="https://diskominfo.boltimkab.go.id" target="_blank" class="logo-hover">Built by Bidang Persandian & Statistik</a>
+          <a href="https://diskominfo.boltimkab.go.id" target="_blank" class="logo-hover">
+            <img src="{{ h.url_for_static('/base/images/diskominfo.png') }}" width="120" alt="diskominfo">
+          </a>
+          <a href="https://boltimkab.go.id/beranda" target="_blank" class="logo-hover">
+            <img src="{{ h.url_for_static('/base/images/portal_boltim.png') }}" width="120" alt="portal">
+          </a>
+          <a href="https://boltimkab.go.id/" target="_blank" class="logo-hover">
+            <img src="{{ h.url_for_static('/base/images/LOGO_BOLTIM_BANGKIT.png') }}" width="150" alt="boltimkab.go.id">
+          </a>
+        </div>
+
+        <!-- Garis pemisah -->
+        <hr class="footer-divider">
+
+        <!-- Kontak -->
+        <div class="footer-contact mt-2">
+          <p><a href="mailto:info@boltimkab.go.id" class="link-hover email-hover"><i class="fas fa-envelope"></i> info@boltimkab.go.id</a></p>
+          <p><a href="mailto:info@boltimkab.go.id" class="link-hover email-hover"><i class="fas fa-envelope"></i> contact@boltimkab.go.id</a></p>
+          <p><a href="tel:+628123456789" class="link-hover phone-hover"><i class="fas fa-phone"></i> Call Us: +62 812-3456-789</a></p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer bawah -->
+  <div class="footer-bottom mt-4">
+    <div class="container footer-bottom-container">
+      <div class="copyright">
+        &copy; 2025 Dinas Komunikasi dan Informatika Kabupaten Bolaang Mongondow Timur. All rights reserved.
+      </div>
+      <div class="social-icons">
+        <a href="https://web.facebook.com/pemda.kabupaten.boltim" target="_blank" class="social-hover facebook"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="https://www.instagram.com/pemdakabupatenboltim/" target="_blank" class="social-hover instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="https://www.youtube.com/@PemdaKabupatenBoltim" target="_blank" class="social-hover youtube"><i class="fa-brands fa-youtube"></i></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+/* Struktur flex untuk kolom */
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.footer-col {
+  flex: 1;
+  min-width: 260px;
+}
+
+.footer-right {
+  text-align: right;
+}
+
+.footer-left {
+  text-align: left;
+}
+
+/* Divider */
+.footer-divider {
+  border: 0;
+  border-top: 1px solid rgba(255,255,255,0.3);
+  margin: 10px 0;
+}
+
+/* Footer bottom rata tengah */
+.footer-bottom-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+/* Logo */
+.footer-logos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: center;
+}
+
+.footer-right .footer-logos {
+  justify-content: flex-end;
+}
+
+/* Responsif */
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+  .footer-right, .footer-left {
+    text-align: center;
+  }
+  .footer-right .footer-logos {
+    justify-content: center;
+  }
+}
+
+/* Hover efek */
+.link-hover {
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+.link-hover:hover {
+  text-decoration: underline;
+}
+
+/* Email & Phone hover */
+.email-hover:hover {
+  color: #1da1f2; /* biru */
+}
+.phone-hover:hover {
+  color: #28a745; /* hijau */
+}
+
+/* Social icons */
+.social-icons a {
+  font-size: 1.2rem;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+/* Facebook hover */
+.social-icons a.facebook:hover {
+  background: #1877f2;
+  color: #fff;
+}
+
+/* Instagram hover */
+.social-icons a.instagram:hover {
+  background: radial-gradient(circle at 30% 30%, #f58529, #dd2a7b, #8134af, #515bd4);
+  color: #fff;
+}
+
+/* YouTube hover */
+.social-icons a.youtube:hover {
+  background: #ff0000;
+  color: #fff;
+}
+</style>

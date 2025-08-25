@@ -1,0 +1,61 @@
+<div role="main" class="hero">
+  <div class="container">
+    <div class="row row1">
+      <div class="col-md-12">
+        {% block search %}
+          {% snippet 'home/snippets/search.html' %}
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="container">
+    <div class="row row2">
+      <div class="col-md-12">
+        {% block stats %}
+          {% snippet 'home/snippets/stats.html' %}
+        {% endblock %}
+      </div>
+    </div>  
+  </div>
+</div>
+
+<div class="main">
+  <div class="container">
+    <h2 class="text-center mb-4"> <i class="fas fa-building"></i> Kategori & Organisasi </h2>
+    <div class="row row3">
+      <div class="col-md-6 col1">
+        {% block featured_group %}
+          {% snippet 'home/snippets/featured_group.html' %}
+        {% endblock %}
+      </div>
+      <div class="col-md-6 col2">
+        {% block featured_organization %}
+          {% snippet 'home/snippets/featured_organization.html' %}
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="container">
+    <div class="row row4">
+      <div class="col-md-12">
+        {% block group_list %}
+          {% snippet 'home/snippets/slide_kategori.html' %}
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+   
+
+
+
