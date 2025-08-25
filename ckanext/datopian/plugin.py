@@ -38,7 +38,7 @@ class DatopianPlugin(plugins.SingletonPlugin):
 class DatopianPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IBlueprint)
-    plugins.implements(plugins.ICommand)
+   
 
     def update_config(self, config):
         toolkit.add_template_directory(config, "templates")
