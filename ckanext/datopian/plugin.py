@@ -1,44 +1,39 @@
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
-from flask import Blueprint, render_template
+from ckan.lib.base import BaseController, render
+from ckan import model
 
 
-def hello_plugin():
-    return u'Hello from the Datopian Theme extension'
+class InsightController(BaseController):
+
+    def index(self):
+        # Ambil semua group yang punya tag "insight"
+        groups = (
+            model.Session.query(model.Group)
+            .filter(model.Group.state == "active")
+            .join(model.tag_table, model.Group.tags)
+            .filter(model.tag_table.c.name == "insight")
+            .all()
+        )
+
+        context = {"groups": groups}
+        return render("insight/index.html", extra_vars=context)
 
 
 class DatopianPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
-    plugins.implements(plugins.IRoutes)
-    plugins.implements(plugins.IBlueprint)
-   
+    plugins.implements(plugins.IRoutes, inherit=True)
 
-    # IConfigurer
-
-    def update_config(self, config_):
-        toolkit.add_template_directory(config_, 'templates')
-        toolkit.add_public_directory(config_, 'public')
-        toolkit.add_resource('assets',
-                             'datopian')
-
-    # IBlueprint
-
-    def get_blueprint(self):
-        u'''Return a Flask Blueprint object to be registered by the app.'''
-        # Create Blueprint for plugin
-        blueprint = Blueprint(self.name, self.__module__)
-        blueprint.template_folder = u'templates'
-        # Add plugin url rules to Blueprint object
-        blueprint.add_url_rule('/hello_plugin', '/hello_plugin', hello_plugin)
-        return blueprint
+    def update_config(self, config):
+        toolkit.add_template_directory(config, "templates")
+        toolkit.add_public_directory(config, "public")
+        toolkit.add_resource("fanstatic", "datopian")
 
     def before_map(self, map):
-        controller = 'ckanext.datopian.controllers.insight:InsightController'
-        map.connect('insight_index', '/insight',
-                    controller=controller, action='index')
-        map.connect('insight_read', '/insight/{id}',
-                    controller=controller, action='read')
-        return map
-
-    def after_map(self, map):
+        map.connect(
+            "insight",
+            "/insight",
+            controller="ckanext.datopian.plugin:InsightController",
+            action="index",
+        )
         return map
