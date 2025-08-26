@@ -15,7 +15,7 @@ def index():
     context = {
         "model": model,
         "session": model.Session,
-        "user": toolkit.g.user or toolkit.current_user.name if toolkit.current_user else ""
+        "user": toolkit.g.user or ""
     }
 
     all_groups = toolkit.get_action("group_list")(
@@ -46,7 +46,7 @@ def read(id):
     context = {
         "model": model,
         "session": model.Session,
-        "user": toolkit.g.user or toolkit.current_user.name if toolkit.current_user else ""
+        "user": toolkit.g.user or ""
     }
 
     group_detail = toolkit.get_action("group_show")(
