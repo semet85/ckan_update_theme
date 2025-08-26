@@ -30,6 +30,7 @@
           ) }}
           <!--,
             ('home.about', _('Tentang'))-->
+
           <li><a href="/insight">Data Insight</a></li>
           <li><a href="/about">Tentang</a></li>
           <li><a href="https://indah.bps.go.id/standar-data-statistik-nasional" target="_blank" title="Standar Data Statistik">SDS</a></li>
@@ -37,7 +38,8 @@
           <!-- 🔹 Pembatas Navigasi vs User -->
           <li class="nav-divider d-lg-none"></li>
         
-          {% if c.userobj %}       
+          {% if c.userobj %}
+          <div class="navbar-toggle>       
           <li><a href="{{ h.url_for('user.read', id=c.userobj.name) }}"><i class="fa fa-user"></i> Profil Saya</a></li>
           <li><a href="{{ h.url_for('dashboard.index') }}"><i class="fa fa-tachometer"></i> Dashboard</a></li>
           <li><a href="{{ h.url_for('user.edit', id=c.userobj.name) }}"><i class="fa fa-cog"></i> Pengaturan</a></li>
@@ -51,6 +53,7 @@
           {% if not c.userobj %}
             <li>{% link_for _('Login'), named_route='user.login' %}</li>
           {% endif %}
+          </div>
         </ul>
       </nav>
     </div>
