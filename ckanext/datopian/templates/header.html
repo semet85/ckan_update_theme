@@ -31,9 +31,8 @@
             <li><a href="/insight">Data Insight</a></li>
             <li><a href="/about">Tentang</a></li>
             <li><a href="https://indah.bps.go.id/standar-data-statistik-nasional" target="_blank" title="Standar Data Statistik">SDS</a></li>
-        </ul>
-
-        <ul class="nav nav-pills user-dropdown">
+        
+            <ul class="nav nav-pills user-dropdown">
             {% if c.userobj %}
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -56,7 +55,10 @@
             {% else %}
                 <li>{% link_for _('Login'), named_route='user.login' %}</li>
             {% endif %}
-        </ul>
+            </ul>
+         </ul>
+
+        
     </nav>
 </div>
   </div>
