@@ -21,42 +21,40 @@
 
     <!-- Navigation -->
     <div class="collapse navbar-collapse" id="main-navigation-toggle">
-      <nav class="section navigation">
-        <ul class="nav nav-pills">
-          {{ h.build_nav_main(
-            ('dataset.search', _('Dataset')),
-            ('organization.index', _('OPD')),
-            ('group.index', _('Kategori'))
-          ) }}
-          <!--,
-            ('home.about', _('Tentang'))-->
+    <nav class="section navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#user-menu" aria-controls="user-menu" aria-expanded="false" aria-label="Toggle user menu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-          <li><a href="/insight">Data Insight</a></li>
-          <li><a href="/about">Tentang</a></li>
-          <li><a href="https://indah.bps.go.id/standar-data-statistik-nasional" target="_blank" title="Standar Data Statistik">SDS</a></li>
-
-          <!-- 🔹 Pembatas Navigasi vs User -->
-          <li class="nav-divider d-lg-none"></li>
-        
-          {% if c.userobj %}
-          <div class="navbar-toggle>       
-          <li><a href="{{ h.url_for('user.read', id=c.userobj.name) }}"><i class="fa fa-user"></i> Profil Saya</a></li>
-          <li><a href="{{ h.url_for('dashboard.index') }}"><i class="fa fa-tachometer"></i> Dashboard</a></li>
-          <li><a href="{{ h.url_for('user.edit', id=c.userobj.name) }}"><i class="fa fa-cog"></i> Pengaturan</a></li>
-          {% if c.userobj.sysadmin %}
-          <li class="divider"></li>
-          <li><a href="{{ h.url_for(controller='admin', action='index') }}"><i class="fa fa-gavel"></i> Sysadmin</a></li>
-          {% endif %}
-          <li class="divider"></li>
-          <li><a href="{{ h.url_for('/user/_logout') }}"><i class="fa fa-sign-out"></i> Keluar</a></li>  
-          {% endif %}
-          {% if not c.userobj %}
-            <li>{% link_for _('Login'), named_route='user.login' %}</li>
-          {% endif %}
-          </div>
+        <ul class="nav nav-pills main-nav">
+            {{ h.build_nav_main(
+                ('dataset.search', _('Dataset')),
+                ('organization.index', _('OPD')),
+                ('group.index', _('Kategori'))
+            ) }}
+            <li><a href="/insight">Data Insight</a></li>
+            <li><a href="/about">Tentang</a></li>
+            <li><a href="https://indah.bps.go.id/standar-data-statistik-nasional" target="_blank" title="Standar Data Statistik">SDS</a></li>
         </ul>
-      </nav>
-    </div>
+
+        <ul class="nav nav-pills user-nav collapse" id="user-menu">
+            {% if c.userobj %}       
+            <li><a href="{{ h.url_for('user.read', id=c.userobj.name) }}"><i class="fa fa-user"></i> Profil Saya</a></li>
+            <li><a href="{{ h.url_for('dashboard.index') }}"><i class="fa fa-tachometer"></i> Dashboard</a></li>
+            <li><a href="{{ h.url_for('user.edit', id=c.userobj.name) }}"><i class="fa fa-cog"></i> Pengaturan</a></li>
+            {% if c.userobj.sysadmin %}
+            <li class="divider"></li>
+            <li><a href="{{ h.url_for(controller='admin', action='index') }}"><i class="fa fa-gavel"></i> Sysadmin</a></li>
+            {% endif %}
+            <li class="divider"></li>
+            <li><a href="{{ h.url_for('/user/_logout') }}"><i class="fa fa-sign-out"></i> Keluar</a></li>  
+            {% endif %}
+            {% if not c.userobj %}
+            <li>{% link_for _('Login'), named_route='user.login' %}</li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
   </div>
 </header>
 
