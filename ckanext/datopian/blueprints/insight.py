@@ -29,12 +29,13 @@ def index():
             if not query or query.lower() in g["name"].lower() or query.lower() in g.get("description", "").lower():
                 insight_groups.append(g)
 
-    page = type("obj", (), {})()
-    page.items = insight_groups
-    page.pager = lambda: ""
-    page.search_query = query
-
-    return render_template("insight/index.html", page=page)
+    # supaya template bisa akses langsung groups
+    return render_template(
+        "insight/index.html",
+        groups=insight_groups,
+        context=context,
+        query=query
+    )
 
 
 @blueprint.route("/<id>", methods=["GET"])
@@ -53,4 +54,4 @@ def read(id):
     if "insight" not in [t["name"] for t in group_detail["tags"]]:
         return toolkit.abort(404)
 
-    return render_template("insight/read.html", group=group_detail)
+    return render_template("insight/read.html", group=group_detail, context=context)
