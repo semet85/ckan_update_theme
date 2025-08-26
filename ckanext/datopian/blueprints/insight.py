@@ -58,3 +58,16 @@ def read(id):
         return toolkit.abort(404)
 
     return render_template("insight/read.html", group=group_detail)
+
+blueprint = Blueprint("datopian_insight", __name__)
+
+@blueprint.route("/insight")
+def index():
+    context = {"user": toolkit.g.user}
+    # ambil semua group yang punya tag insight
+    groups = toolkit.get_action("group_list")(
+        context, {"all_fields": True}
+    )
+    insights = [g for g in groups if "insight" in [t["name"] for t in g.get("tags", [])]]
+
+    return render_template("insight/index.html", groups=insights)

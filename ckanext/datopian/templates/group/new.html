@@ -11,3 +11,20 @@
 {% block secondary_content %}
   {% snippet "group/snippets/helper.html" %}
 {% endblock %}
+
+{# 🔹 Tambahan untuk auto-isi tag insight #}
+{% block scripts %}
+  {{ super() }}
+  {% if request.params.get('insight') %}
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        let tagInput = document.querySelector("input[name='tag_string']");
+        if (tagInput && !tagInput.value.includes("insight")) {
+          tagInput.value = tagInput.value
+            ? tagInput.value + ", insight"
+            : "insight";
+        }
+      });
+    </script>
+  {% endif %}
+{% endblock %}
