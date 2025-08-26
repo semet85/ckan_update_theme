@@ -6,10 +6,10 @@
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Daftar Insight</h2>
     {% if c.user %}
-    <a href="{{ h.url_for('group.new') }}?insight=1" 
-       class="btn btn-primary"
-       style="position: relative; z-index: 9999;">
-      <i class="fa fa-plus"></i> Tambah Insight
+    <a class="btn btn-primary" 
+       href="{{ h.url_for(group_type + '.new') }}?insight=1"
+       style="margin-left:10px;">
+      <i class="fa fa-lightbulb-o"></i> {{ _('Tambah Insight') }}
     </a>
   {% endif %}
   </div>
