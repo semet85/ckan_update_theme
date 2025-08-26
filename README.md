@@ -75,8 +75,8 @@ do:
 
     docker compose exec -u root ckan bash
     cd src
-    git clone https://github.com/semet85/update_theme.git
-    cd update_theme
+    git clone https://github.com/semet85/ckan_update_theme.git
+    cd ckan_update_theme
     python setup.py develop
     pip install -r dev-requirements.txt
     apt update && apt install nano -y  
