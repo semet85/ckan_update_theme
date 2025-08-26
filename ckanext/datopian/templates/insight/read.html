@@ -17,7 +17,7 @@
 
   <h2>Dataset Terkait</h2>
   {% if c.group_dict.packages %}
-    {% snippet "snippets/package_list.html", packages=c.group_dict.packages %}
+    {% snippet "group/snippets/group_list.html", packages=c.group_dict.packages %}
   {% else %}
     <p>Tidak ada dataset untuk insight ini.</p>
   {% endif %}
