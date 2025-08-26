@@ -12,10 +12,13 @@
   {% snippet "group/snippets/helper.html" %}
 {% endblock %}
 
-{# 🔹 Tambahan auto-isi tag insight kalau ada query ?insight=1 #}
+{# 🔹 Form utama #}
 {% block form %}
   {{ super() }}
+  
+  {# 🔹 Tambahan auto-isi tag "insight" jika query ?insight=1 #}
   {% if request.params.get('insight') %}
+    {# Pastikan tidak menggunakan form.field.input() karena bisa error #}
     <input type="hidden" name="tag_string" value="insight">
   {% endif %}
 {% endblock %}
