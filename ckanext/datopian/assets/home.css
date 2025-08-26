@@ -2,7 +2,7 @@
 
 /* Ubah warna latar belakang menu dropdown */
 .navbar-static-top .dropdown-menu {
-  background-color: #337ab7; /* Ganti dengan warna navbar Anda */
+  background-color: #3c3c3c; /* Ganti dengan warna navbar Anda */
 }
 
 /* Opsional: Atur warna teks agar terlihat jelas di latar belakang gelap */
@@ -12,7 +12,7 @@
 
 /* Opsional: Tambahkan efek hover */
 .navbar-static-top .dropdown-menu li a:hover {
-  background-color: #286090; /* Warna sedikit lebih gelap saat kursor mengarah */
+  background-color: #252525; /* Warna sedikit lebih gelap saat kursor mengarah */
 }
 
 .stats-wrapper {
