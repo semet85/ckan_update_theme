@@ -6,9 +6,11 @@
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Daftar Insight</h2>
     {% if c.user %}
-    <button class="btn btn-primary" onclick="window.location.href='/group/new?insight=1'">
+    <a href="{{ h.url_for('group.new') }}?insight=1" 
+       class="btn btn-primary"
+       style="position: relative; z-index: 9999;">
       <i class="fa fa-plus"></i> Tambah Insight
-    </button>
+    </a>
   {% endif %}
   </div>
 
