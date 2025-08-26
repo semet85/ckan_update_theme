@@ -1,4 +1,5 @@
 import ckan.plugins.toolkit as toolkit
+import ckan.model as model
 from flask import Blueprint, request, render_template
 
 blueprint = Blueprint(
@@ -11,39 +12,48 @@ blueprint = Blueprint(
 def index():
     query = request.args.get("q", "")
 
+    context = {
+        "model": model,
+        "session": model.Session,
+        "user": toolkit.g.user or toolkit.current_user.name if toolkit.current_user else ""
+    }
+
     all_groups = toolkit.get_action("group_list")(
-        context={"model": toolkit.model, "session": toolkit.model.Session, "user": toolkit.c.user},
+        context=context,
         data_dict={}
     )
 
     insight_groups = []
     for g in all_groups:
         group_detail = toolkit.get_action("group_show")(
-            context={"model": toolkit.model, "session": toolkit.model.Session, "user": toolkit.c.user},
+            context=context,
             data_dict={"id": g["id"]}
         )
         if "insight" in [t["name"] for t in group_detail["tags"]]:
             if not query or query.lower() in group_detail["name"].lower() or query.lower() in group_detail.get("description", "").lower():
                 insight_groups.append(group_detail)
 
-    c = toolkit.c
-    c.page = type("obj", (), {})()
-    c.page.items = insight_groups
-    c.page.pager = lambda: ""
-    c.page.search_query = query
+    page = type("obj", (), {})()
+    page.items = insight_groups
+    page.pager = lambda: ""
+    page.search_query = query
 
-    return render_template("insight/index.html")
+    return render_template("insight/index.html", page=page)
 
 
 @blueprint.route("/<id>", methods=["GET"])
 def read(id):
+    context = {
+        "model": model,
+        "session": model.Session,
+        "user": toolkit.g.user or toolkit.current_user.name if toolkit.current_user else ""
+    }
+
     group_detail = toolkit.get_action("group_show")(
-        context={"model": toolkit.model, "session": toolkit.model.Session, "user": toolkit.c.user},
+        context=context,
         data_dict={"id": id}
     )
     if "insight" not in [t["name"] for t in group_detail["tags"]]:
         return toolkit.abort(404)
 
-    c = toolkit.c
-    c.group_dict = group_detail
-    return render_template("insight/read.html")
+    return render_template("insight/read.html", group=group_detail)

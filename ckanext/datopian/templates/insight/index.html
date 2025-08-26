@@ -5,15 +5,15 @@
 {% block page_primary_action %}
   <h1 class="page-heading">Data Insight</h1>
   <form method="get" action="/insight" class="insight-search-form">
-    <input type="text" name="q" value="{{ c.page.search_query or '' }}" placeholder="Cari Insight..." />
+    <input type="text" name="q" value="{{ page.search_query or '' }}" placeholder="Cari Insight..." />
     <button type="submit">Cari</button>
   </form>
 {% endblock %}
 
 {% block primary_content_inner %}
   <div class="insight-grid">
-    {% if c.page.items %}
-      {% for group in c.page.items %}
+    {% if page.items %}
+      {% for group in page.items %}
         <div class="insight-card">
           <a href="{{ h.url_for('insight.read', id=group.id) }}">
             <h2>{{ group.display_name }}</h2>
