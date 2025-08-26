@@ -24,10 +24,10 @@ def index():
     )
 
     insight_groups = []
-    for g in all_groups:
+    for g in all_groups:   # g = string nama group
         group_detail = toolkit.get_action("group_show")(
             context=context,
-            data_dict={"id": g["id"]}
+            data_dict={"id": g}
         )
         if "insight" in [t["name"] for t in group_detail["tags"]]:
             if not query or query.lower() in group_detail["name"].lower() or query.lower() in group_detail.get("description", "").lower():
@@ -39,6 +39,7 @@ def index():
     page.search_query = query
 
     return render_template("insight/index.html", page=page)
+
 
 
 @blueprint.route("/<id>", methods=["GET"])
