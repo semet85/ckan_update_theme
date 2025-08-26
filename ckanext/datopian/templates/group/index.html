@@ -11,6 +11,11 @@
 {% block page_primary_action %}
   {% if h.check_access('group_create') %}
     {% link_for _('Tambah Kategori'), named_route=group_type+'.new', class_='btn btn-primary', icon='plus-square' %}
+    <a class="btn btn-primary" 
+       href="{{ h.url_for(group_type + '.new') }}?insight=1"
+       style="margin-left:10px;">
+      <i class="fa fa-lightbulb-o"></i> {{ _('Tambah Insight') }}
+    </a>
   {% endif %}
 {% endblock %}
 
