@@ -1,5 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200;300;400;500;600;700&display=swap');
 
+/* Ubah warna latar belakang menu dropdown */
+.navbar-static-top .dropdown-menu {
+  background-color: #337ab7; /* Ganti dengan warna navbar Anda */
+}
+
+/* Opsional: Atur warna teks agar terlihat jelas di latar belakang gelap */
+.navbar-static-top .dropdown-menu li a {
+  color: #fff; /* Warna teks putih */
+}
+
+/* Opsional: Tambahkan efek hover */
+.navbar-static-top .dropdown-menu li a:hover {
+  background-color: #286090; /* Warna sedikit lebih gelap saat kursor mengarah */
+}
+
 .stats-wrapper {
   display: flex;
   justify-content: center;
