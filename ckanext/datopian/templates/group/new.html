@@ -1,10 +1,31 @@
 {% extends "group/base_form_page.html" %}
 
-{% block subtitle %}{{ _('Buat Kategori') }}{% endblock %}
+{# 🔹 Judul tab browser #}
+{% block subtitle %}
+  {% if request.params.get('insight') %}
+    {{ _('Buat Insight') }}
+  {% else %}
+    {{ _('Buat Kategori') }}
+  {% endif %}
+{% endblock %}
 
-{% block breadcrumb_link %}{{ h.nav_link(_('Buat Kategori'), named_route=group_type+'.new') }}{% endblock %}
+{# 🔹 Breadcrumb #}
+{% block breadcrumb_link %}
+  {% if request.params.get('insight') %}
+    {{ h.nav_link(_('Buat Insight'), named_route=group_type+'.new') }}
+  {% else %}
+    {{ h.nav_link(_('Buat Kategori'), named_route=group_type+'.new') }}
+  {% endif %}
+{% endblock %}
 
-{% block page_heading %}{{ _('Buat Kategori') }}{% endblock %}
+{# 🔹 Heading Halaman #}
+{% block page_heading %}
+  {% if request.params.get('insight') %}
+    {{ _('Buat Insight') }}
+  {% else %}
+    {{ _('Buat Kategori') }}
+  {% endif %}
+{% endblock %}
 
 {% block page_header %}{% endblock %}
 
@@ -12,19 +33,49 @@
   {% snippet "group/snippets/helper.html" %}
 {% endblock %}
 
-{# 🔹 Tambahan untuk auto-isi tag insight #}
+{# 🔹 Form utama #}
+{% block primary_content_inner %}
+  <form class="form-horizontal" method="post" action=""
+        onsubmit="return setRedirectUrl();">
+
+    {# Tambahkan hidden input otomatis kalau mode insight #}
+    {% if request.params.get('insight') %}
+      <input type="hidden" name="tag_string" value="insight">
+      <input type="hidden" id="redirect_url"
+             name="redirect_url"
+             value="{{ h.url_for('group.index') }}?insight=1">
+    {% endif %}
+
+    {{ form.input('name', label=_('Nama'), classes=['form-control']) }}
+    {{ form.input('title', label=_('Judul'), classes=['form-control']) }}
+    {{ form.textarea('description', label=_('Deskripsi'), classes=['form-control']) }}
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-success">
+        <i class="fa fa-save"></i>
+        {% if request.params.get('insight') %}
+          Simpan Insight
+        {% else %}
+          Simpan Kategori
+        {% endif %}
+      </button>
+      <a href="{{ h.url_for('group.index') }}" class="btn btn-default">Batal</a>
+    </div>
+  </form>
+{% endblock %}
+
 {% block scripts %}
   {{ super() }}
   {% if request.params.get('insight') %}
     <script>
-      document.addEventListener("DOMContentLoaded", function() {
-        let tagInput = document.querySelector("input[name='tag_string']");
-        if (tagInput && !tagInput.value.includes("insight")) {
-          tagInput.value = tagInput.value
-            ? tagInput.value + ", insight"
-            : "insight";
+      function setRedirectUrl() {
+        // Pastikan input redirect terisi ke daftar insight
+        let redirectInput = document.getElementById("redirect_url");
+        if (redirectInput && !redirectInput.value) {
+          redirectInput.value = "{{ h.url_for('group.index') }}?insight=1";
         }
-      });
+        return true;
+      }
     </script>
   {% endif %}
 {% endblock %}
