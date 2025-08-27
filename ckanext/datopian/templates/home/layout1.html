@@ -24,6 +24,23 @@
 
 <div class="main">
   <div class="container">
+    <div class="row row4">
+      <div class="col-md-12">
+        {# Grid kartu insight #}
+        {% snippet 'snippets/insight_grid.html',
+          title='Data Insight',
+          limit=6,
+          order='count_desc',
+          q='',
+          show_more_url=h.url_for('ckanet_insight.insights_home')
+        %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="container">
     <h2 class="text-center mb-4"> <i class="fas fa-building"></i> Kategori & Organisasi </h2>
     <div class="row row3">
       <div class="col-md-6 col1">
