@@ -2,7 +2,7 @@
 {% set _id   = modal_id or 'promoImageModal' %}
 {% set _img  = image_url or '/base/images/popup.jpg' %}
 {% set _alt  = alt or 'Promosi' %}
-{% set _href = href or None %}  {# opsional: kalau ingin klik gambar menuju link #}
+{% set _href = href or None %}  {# abaikan/None kalau mau selalu redirect ke home #}
 
 <div id="{{ _id }}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="{{ _id }}Label">
   <div class="modal-dialog modal-lg" role="document" style="margin-top:40px;">
@@ -23,13 +23,38 @@
 <script>
 (function(){
   function ready(fn){ if(document.readyState!=='loading'){fn();} else {document.addEventListener('DOMContentLoaded', fn);} }
+
   ready(function(){
     var el = document.getElementById('{{ _id }}');
+    var homeURL = "{{ h.url_for('home.index') }}";
+
+    function goHome(){
+      // Langsung arahkan ke halaman utama
+      window.location.href = homeURL;
+    }
+
     if (el && typeof jQuery !== 'undefined' && jQuery.fn.modal) {
-      // Selalu tampil saat halaman dimuat
-      jQuery(el).modal({backdrop:true, keyboard:true, show:true});
-      // (opsional) klik gambar untuk menutup:
-      // jQuery(el).find('.modal-content').on('click', function(){ jQuery(el).modal('hide'); });
+      var $el = jQuery(el);
+
+      // Tampilkan modal setiap load
+      $el.modal({backdrop:true, keyboard:true, show:true});
+
+      // Saat modal sudah tampil, pasang listener global satu kali
+      $el.on('shown.bs.modal', function(){
+        // Klik di mana saja -> home
+        document.addEventListener('click', goHome, {once:true, capture:true});
+        // Sentuh layar -> home (untuk mobile)
+        document.addEventListener('touchstart', goHome, {once:true, capture:true});
+        // Tekan tombol apa pun -> home
+        document.addEventListener('keydown', goHome, {once:true, capture:true});
+      });
+
+      // Jika modal ditutup tanpa trigger (jarang), bersihkan listener
+      $el.on('hidden.bs.modal', function(){
+        document.removeEventListener('click', goHome, true);
+        document.removeEventListener('touchstart', goHome, true);
+        document.removeEventListener('keydown', goHome, true);
+      });
     }
   });
 })();
