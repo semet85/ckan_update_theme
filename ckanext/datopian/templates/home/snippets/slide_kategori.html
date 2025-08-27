@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 <h2 class="text-center mb-4"> <i class="fas fa-folder-open"></i> Topik Data</h2>
-{% set groups = h.get_featured_groups(count=10) %}
+{% set groups = h.get_featured_groups(count=15) %}
 {% if not groups %}
   <p class="text-center">{{ _('Tidak ada kategori yang ditemukan.') }}</p>
 {% else %}
