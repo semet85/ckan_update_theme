@@ -15,26 +15,38 @@
   </div>
 </a>
 
-{# ===== Hitung Desa & OPD non-Desa (pakai helper ekstensi) ===== #}
-{# Ganti 'desa ' (pakai spasi) kalau mau lebih ketat; atau 'desa' (tanpa spasi) untuk awalan apapun #}
-{% set desa_count = h.ckanet_count_orgs_startswith('desa', field='title', limit=5000) %}
-{% set total_org = stats.organization_count or 0 %}
-{% set opd_non_desa_count = total_org - desa_count %}
-{% if opd_non_desa_count < 0 %}{% set opd_non_desa_count = 0 %}{% endif %}
+{# Ambil hanya featured organizations #}
+{% set orgs = h.get_featured_organizations() or [] %}
 
-<!-- Organisasi (OPD) non-Desa -->
+{# Hitung Desa (title/name diawali 'Desa') dan non-Desa #}
+{% set ns = namespace(desa=0, non_desa=0) %}
+{% for o in orgs %}
+  {% set t = (o.title or o.name or '') %}
+  {% if t and t|lower.startswith('desa') %}
+    {% set ns.desa = ns.desa + 1 %}
+  {% else %}
+    {% set ns.non_desa = ns.non_desa + 1 %}
+  {% endif %}
+{% endfor %}
+
+{% set desa_count = ns.desa %}
+{% set opd_non_desa_count = ns.non_desa %}
+
+
+<!-- Organisasi (OPD) non-Desa - dari featured orgs -->
 <a href="{{ h.url_for('organization.index') }}" class="stat-card organization">
   <img src="/base/images/opd.png" alt="Organisasi Icon" class="icon" style="width:130px; height:130px;" />
   <div class="stat-number" data-count="{{ opd_non_desa_count }}">0</div>
   <div class="stat-label">OPD Terhubung</div>
 </a>
 
-<!-- Desa Card (org title/name startswith "Desa") -->
+<!-- Desa Terhubung - dari featured orgs -->
 <a href="{{ h.url_for('organization.index') ~ '?q=Desa' }}" class="stat-card desaku">
   <img src="/base/images/desa.png" alt="Desa Icon" class="icon" style="width:130px; height:130px;" />
   <div class="stat-number" data-count="{{ desa_count }}">0</div>
   <div class="stat-label">Desa Terhubung</div>
 </a>
+
 
 
 <!-- Kategori Card -->
