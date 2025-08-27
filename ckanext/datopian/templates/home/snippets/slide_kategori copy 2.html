@@ -2,54 +2,34 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 <h2 class="text-center mb-4"> <i class="fas fa-folder-open"></i> Topik Data</h2>
-{# Ambil featured groups #}
 {% set groups = h.get_featured_groups(count=15) %}
-
-{# Filter: hanya group yang BUKAN insight-* #}
-{% set ns = namespace(items=[]) %}
-{% for g in groups %}
-  {% if not (g.name and g.name.startswith('insight-')) %}
-    {% set _ = ns.items.append(g) %}
-  {% endif %}
-{% endfor %}
-{% set groups = ns.items %}
-
 {% if not groups %}
-  <p class="text-center">{{ _('Tidak ada kategori non-insight yang ditemukan.') }}</p>
+  <p class="text-center">{{ _('Tidak ada kategori yang ditemukan.') }}</p>
 {% else %}
 <div class="carousel-container">
   <div class="group-carousel">
     <div class="carousel-track-wrapper">
       <div class="carousel-track">
-
-        {# Loop utama (sudah tersaring) #}
         {% for group in groups %}
         <div class="group-card">
-          <a href="{{ h.url_for('group.read', id=group.name) }}">
-            <img src="{{ group.image_display_url or h.url_for_static('/base/images/placeholder-group.png') }}"
-                 alt="{{ group.title }}">
+          <a href="{{ h.url_for(controller='group', action='read', id=group.name) }}">
+            <img src="{{ group.image_display_url or h.url_for_static('/base/images/placeholder-group.png') }}" alt="{{ group.title }}">
             <h5>{{ group.title }}</h5>
           </a>
         </div>
         {% endfor %}
-
-        {# Duplikasi untuk efek infinite scroll (pakai list yang sama, sudah tersaring) #}
+        <!-- Duplikasi untuk infinite scroll -->
         {% for group in groups %}
         <div class="group-card">
-          <a href="{{ h.url_for('group.read', id=group.name) }}">
-            <img src="{{ group.image_display_url or h.url_for_static('/base/images/placeholder-group.png') }}"
-                 alt="{{ group.title }}">
+          <a href="{{ h.url_for(controller='group', action='read', id=group.name) }}">
+            <img src="{{ group.image_display_url or h.url_for_static('/base/images/placeholder-group.png') }}" alt="{{ group.title }}">
             <h5>{{ group.title }}</h5>
           </a>
         </div>
         {% endfor %}
-
       </div>
     </div>
   </div>
-</div>
-{% endif %}
-
 
   <!-- Tombol carousel -->
   <button class="carousel-btn left-btn">
