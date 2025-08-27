@@ -15,13 +15,45 @@
   </div>
 </a>
 
-<!-- Organisasi Card -->
+{# Hitung jumlah organisasi yang namanya/title diawali "Desa" (case-insensitive) #}
+{% set orgs = h.call_action('organization_list', {'all_fields': True, 'limit': 5000}) %}
+{% set ns = namespace(desa=0) %}
+{% for o in orgs %}
+  {% set t = (o.title or o.name or '') %}
+  {% if t and t.lower().startswith('desa') %}
+    {% set ns.desa = ns.desa + 1 %}
+  {% endif %}
+{% endfor %}
+{% set desa_count = ns.desa %}
+
+{# OPD non-Desa = total organisasi - organisasi "Desa*" #}
+{% set opd_non_desa_count = (stats.organization_count or 0) - desa_count %}
+{% if opd_non_desa_count < 0 %}{% set opd_non_desa_count = 0 %}{% endif %}
+
+<!-- Organisasi (OPD) non-Desa -->
 <a href="{{ h.url_for('organization.index') }}" class="stat-card organization">
   <img src="/base/images/opd.png" alt="Organisasi Icon" class="icon" style="width:130px; height:130px;" />
-  <div class="stat-number" data-count="{{ stats.organization_count }}">0</div>
-  <div class="stat-label">
-    {{ _('OPD Terhubung') if stats.organization_count == 1 else _('OPD Terhubung') }}
-  </div>
+  <div class="stat-number" data-count="{{ opd_non_desa_count }}">0</div>
+  <div class="stat-label">OPD Terhubung</div>
+</a>
+
+{# Hitung organisasi yang title/name diawali "Desa" (case-insensitive) #}
+{% set orgs = h.call_action('organization_list', {'all_fields': True, 'limit': 1000}) %}
+{% set ns = namespace(cnt=0) %}
+{% for o in orgs %}
+  {% set t = (o.title or o.name or '') %}
+  {% if t and t.lower().startswith('desa') %}
+    {% set ns.cnt = ns.cnt + 1 %}
+  {% endif %}
+{% endfor %}
+{% set desa_count = ns.cnt %}
+
+
+<!-- Desa Card (org name startswith "Desa") -->
+<a href="{{ h.url_for('organization.index') ~ '?q=Desa' }}" class="stat-card desaku">
+  <img src="/base/images/desa.png" alt="Desa Icon" class="icon" style="width:130px; height:130px;" />
+  <div class="stat-number" data-count="{{ desa_count }}">0</div>
+  <div class="stat-label">Desa Terhubung</div>
 </a>
 
 <!-- Kategori Card -->
@@ -47,6 +79,7 @@
   .dataset { background: linear-gradient(135deg, #3498db, #2980b9); }
   .organization { background: linear-gradient(135deg, #2ecc71, #27ae60); }
   .category { background: linear-gradient(135deg, #f1c40f, #f39c12); }
+  .desaku { background: linear-gradient(135deg, #0ff147, #19f312); }
   .stat-card .icon { font-size: 8rem; margin-bottom: 15px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
   .stat-card .stat-number { font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
   .stat-card .stat-label { font-size: 1.3rem; font-weight: 600; }
