@@ -65,71 +65,63 @@
 
 <!-- 🔹 Inline CSS + JS -->
 <style>
-  /* Biar header selalu fixed */
-  header.masthead {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1030;
-    transition: all 0.3s ease;
-    padding: 8px 0;   /* 🔹 dikurangi supaya lebih ramping */
-    background: #535353;     /* Langsung abu gelap */
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  :root{
+    --masthead-h: 60px;      /* fallback kalau JS gagal */
+    --page-top-gap: 10px;    /* jarak kecil antara header & konten */
   }
 
-  /* Konten tidak ketimpa header */
-  body {
-    padding-top: 65px;
+  /* header tetap fixed */
+  header.masthead{
+    position: fixed; top:0; left:0; width:100%;
+    z-index:1030; transition: all .3s ease;
+    padding:8px 0; background:#535353; box-shadow:0 2px 8px rgba(0,0,0,.2);
   }
+  header.masthead.scrolled{ background:#3c3c3c; padding:5px 0; box-shadow:0 3px 12px rgba(0,0,0,.3); }
+  header.masthead img{ max-height:40px; transition:max-height .3s ease; }
+  header.masthead.scrolled img{ max-height:33px; }
 
-  /* Efek scroll */
-  header.masthead.scrolled {
-     background: #3c3c3c;   /* Lebih gelap saat discroll */
-    padding: 5px 0;        /* Makin kecil */
-    box-shadow: 0 3px 12px rgba(0,0,0,0.3);
-  }
+  /* 👉 padding-top body mengikuti tinggi header + sedikit gap */
+  body{ padding-top: calc(var(--masthead-h) + var(--page-top-gap)); }
 
-  header.masthead img {
-    max-height: 40px;
-    transition: max-height 0.3s ease;
-  }
+  /* rapikan tampilan user menu */
+  .navbar-right .username{ font-weight:500; margin-left:6px; color:#fff; }
+  .navbar-right a{ color:#f5f5f5; transition:color .2s; }
+  .navbar-right a:hover{ color:#ffd966; }
 
-  header.masthead.scrolled img {
-    max-height: 33px;
-  }
+  /* 🔹 KECILKAN margin judul & toolbar khusus halaman dataset */
+  /* CKAN memberi class controller & action ke <body> */
+  body[class*="controller-package"] .page-heading{ margin-top: 4px !important; }
+  body[class*="controller-package"] .toolbar{ margin-top: 6px !important; }
 
-  /* Style username di kanan */
-  .navbar-right .username {
-    font-weight: 500;
-    margin-left: 6px;
-    color: #fff;
-  }
-  .navbar-right a {
-    color: #f5f5f5;
-    transition: color 0.2s;
-  }
-  .navbar-right a:hover {
-    color: #ffd966;
-  }
+  /* opsi tambahan: rapikan container paling atas jika tema memberi gap besar */
+  body[class*="controller-package"] .wrapper, 
+  body[class*="controller-package"] .content{ padding-top: 0 !important; }
 </style>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  // Ambil link OPD / organization.index
-  const opdLink = document.querySelector('ul.nav a[href*="/organization"]');
-  if(opdLink) {
-    opdLink.setAttribute('title', 'Organisasi Perangkat Daerah');
-  }
-});
-</script>
 
 <script>
-  window.addEventListener("scroll", function() {
-    var header = document.querySelector("header.masthead");
-    if (header) {
-      header.classList.toggle("scrolled", window.scrollY > 50);
-    }
+  function setMastheadHeight(){
+    var h = document.querySelector('header.masthead');
+    if(!h) return;
+    var height = Math.ceil(h.getBoundingClientRect().height);
+    document.documentElement.style.setProperty('--masthead-h', height + 'px');
+  }
+  document.addEventListener('DOMContentLoaded', setMastheadHeight);
+  window.addEventListener('load', setMastheadHeight);
+  window.addEventListener('resize', setMastheadHeight);
+  window.addEventListener('scroll', setMastheadHeight);
+
+  // Tooltip kecil untuk OPD
+  document.addEventListener('DOMContentLoaded', function(){
+    var opdLink = document.querySelector('ul.nav a[href*="/organization"]');
+    if(opdLink){ opdLink.title = 'Organisasi Perangkat Daerah'; }
+  });
+
+  // efek scroll: header mengecil
+  window.addEventListener('scroll', function(){
+    var header = document.querySelector('header.masthead');
+    if(header){ header.classList.toggle('scrolled', window.scrollY > 50); }
   });
 </script>
+
 {% endblock %}
