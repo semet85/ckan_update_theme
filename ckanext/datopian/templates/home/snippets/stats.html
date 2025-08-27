@@ -1,101 +1,150 @@
 {% set stats = h.get_site_statistics() %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+{# AOS CSS #}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" integrity="sha512-pZ7S2TnYjvG6N6z0lAqkT9vQ0lJmC3h5xOqVn8Qn7pXG7c7k7y2Z+3wHc3zqV5yJk0Nz9r6n9jv8g8b1kzY4xA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-<div class="stats-wrapper">
-  <h2 class="stats-title text-center mb-4"> <i class="fas fa-chart-bar"></i> Satu Data ORAS</h2>
+<div class="stats-wrapper" id="stats-section">
+  <h2 class="stats-title text-center mb-4" data-aos="fade-up"> 
+    <i class="fas fa-chart-bar"></i> Satu Data ORAS
+  </h2>
 
   <div class="stats-grid">
 
-<!-- Dataset Card -->
-<a href="{{ h.url_for('dataset.search') }}" class="stat-card dataset">
-  <img src="/base/images/dataset.png" alt="Dataset Icon" class="icon" style="width:130px; height:130px;" />
-  <div class="stat-number" data-count="{{ stats.dataset_count }}">0</div>
-  <div class="stat-label">
-    {{ _('Dataset Tersedia') if stats.dataset_count == 1 else _('Dataset Tersedia') }}
-  </div>
-</a>
+    <!-- Dataset Card -->
+    <a href="{{ h.url_for('dataset.search') }}" class="stat-card dataset" 
+       data-aos="zoom-in" data-aos-delay="0">
+      <img src="/base/images/dataset.png" alt="Dataset Icon" class="icon" style="width:130px; height:130px;" />
+      <div class="stat-number" data-count="{{ stats.dataset_count }}">0</div>
+      <div class="stat-label">
+        {{ _('Dataset Tersedia') if stats.dataset_count == 1 else _('Dataset Tersedia') }}
+      </div>
+    </a>
 
+    {# --- Ambil angka OPD & Desa dari helper (isi sebelumnya milikmu) --- #}
+    {% set stats = h.get_site_statistics() or {} %}
+    {% set orgc = h.ckanet_org_counts('desa', 5000) %}
+    {% set opd_count = orgc.non_desa %}
+    {% set desa_count = orgc.desa %}
 
-{% set stats = h.get_site_statistics() or {} %}
+    <!-- OPD -->
+    <a href="{{ h.url_for('organization.index') }}" class="stat-card organization"
+       data-aos="zoom-in" data-aos-delay="100">
+      <img src="/base/images/opd.png" alt="OPD Icon" class="icon" style="width:130px; height:130px;" />
+      <div class="stat-number" data-count="{{ opd_count }}">0</div>
+      <div class="stat-label">OPD Terhubung</div>
+    </a>
 
-{# Hitung organisasi: total, 'Desa*', non-Desa #}
-{% set orgc = h.ckanet_org_counts('desa', 5000) %}
+    <!-- Desa -->
+    <a href="{{ h.url_for('organization.index') ~ '?q=Desa' }}" class="stat-card desaku"
+       data-aos="zoom-in" data-aos-delay="200">
+      <img src="/base/images/desa.png" alt="Desa Icon" class="icon" style="width:130px; height:130px;" />
+      <div class="stat-number" data-count="{{ desa_count }}">0</div>
+      <div class="stat-label">Desa Terhubung</div>
+    </a>
 
-{# Angka kartu #}
-{% set opd_count = orgc.non_desa %}
-{% set desa_count = orgc.desa %}
-
-
-<!-- OPD (non-'Desa*' berbasis Organisasi) -->
-<a href="{{ h.url_for('organization.index') }}" class="stat-card organization">
-  <img src="/base/images/opd.png" alt="OPD Icon" class="icon" style="width:130px; height:130px;" />
-  <div class="stat-number" data-count="{{ opd_count }}">0</div>
-  <div class="stat-label">OPD Terhubung</div>
-</a>
-
-<!-- Desa (organisasi diawali 'Desa') -->
-<a href="{{ h.url_for('organization.index') ~ '?q=Desa' }}" class="stat-card desaku">
-  <img src="/base/images/desa.png" alt="Desa Icon" class="icon" style="width:130px; height:130px;" />
-  <div class="stat-number" data-count="{{ desa_count }}">0</div>
-  <div class="stat-label">Desa Terhubung</div>
-</a>
-
-
-<!-- Kategori Card -->
-<a href="{{ h.url_for('group.index') }}" class="stat-card category">
-  <img src="/base/images/kategori.png" alt="Kategori Icon" class="icon" style="width:130px; height:130px;" />
-  <div class="stat-number" data-count="{{ stats.group_count }}">0</div>
-  <div class="stat-label">
-    {{ _('Kategori') if stats.group_count == 1 else _('Kategori') }}
-  </div>
-</a>
-
+    <!-- Kategori -->
+    <a href="{{ h.url_for('group.index') }}" class="stat-card category"
+       data-aos="zoom-in" data-aos-delay="300">
+      <img src="/base/images/kategori.png" alt="Kategori Icon" class="icon" style="width:130px; height:130px;" />
+      <div class="stat-number" data-count="{{ stats.group_count }}">0</div>
+      <div class="stat-label">
+        {{ _('Kategori') if stats.group_count == 1 else _('Kategori') }}
+      </div>
+    </a>
 
   </div>
 </div>
 
 <style>
-  /* CSS sama seperti sebelumnya */
-  .stats-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 20vh; text-align: center; }
-  .stats-title { font-size: 2.2rem; font-weight: 700; margin-bottom: 10px; color: #333333; }
-  .stats-grid { display: flex; flex-direction: row; justify-content: center; align-items: stretch; gap: 20px; flex-wrap: nowrap; }
-  .stat-card { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 220px; height: 230px; padding: 25px 25px; border-radius: 15px; color: #fff; text-decoration: none; transition: transform 0.3s, box-shadow 0.3s, background 0.3s; box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
-  .stat-card:hover { transform: translateY(-8px); box-shadow: 0 12px 20px rgba(0,0,0,0.25); }
-  .dataset { background: linear-gradient(135deg, #3498db, #2980b9); }
-  .organization { background: linear-gradient(135deg, #2ecc71, #27ae60); }
-  .category { background: linear-gradient(135deg, #f1c40f, #f39c12); }
-  .desaku { background: linear-gradient(135deg, #0ff147, #19f312); }
-  .stat-card .icon { font-size: 8rem; margin-bottom: 15px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
-  .stat-card .stat-number { font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
-  .stat-card .stat-label { font-size: 1.3rem; font-weight: 600; }
-  @media (max-width: 992px) { .stats-grid { flex-wrap: wrap; } .stat-card { flex: 1 1 45%; max-width: 45%; margin-bottom: 20px; } }
-  @media (max-width: 576px) { .stat-card { flex: 1 1 100%; max-width: 100%; } .stat-card .icon { font-size: 3rem; } .stat-card .stat-number { font-size: 1.8rem; } .stat-card .stat-label { font-size: 1.2rem; } .stats-title { font-size: 1.8rem; } } 
-  /* Bungkus grid statistik */
-  
-
-/* Responsive */
-@media (max-width: 768px) {
-  .stat-card {
-    flex: 1 1 100%;
-    max-width: 100%;
-  }
-}
+  .stats-wrapper { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:20vh; text-align:center; }
+  .stats-title { font-size:2.2rem; font-weight:700; margin-bottom:10px; color:#333; }
+  .stats-grid { display:flex; flex-direction:row; justify-content:center; align-items:stretch; gap:20px; flex-wrap:nowrap; }
+  .stat-card { display:flex; flex-direction:column; align-items:center; justify-content:center; width:220px; height:230px; padding:25px; border-radius:15px; color:#fff; text-decoration:none; transition:transform .3s, box-shadow .3s, background .3s; box-shadow:0 6px 12px rgba(0,0,0,.15); }
+  .stat-card:hover { transform:translateY(-8px); box-shadow:0 12px 20px rgba(0,0,0,.25); }
+  .dataset { background:linear-gradient(135deg, #3498db, #2980b9); }
+  .organization { background:linear-gradient(135deg, #2ecc71, #27ae60); }
+  .category { background:linear-gradient(135deg, #f1c40f, #f39c12); }
+  .desaku { background:linear-gradient(135deg, #0ff147, #19f312); }
+  .stat-card .icon { font-size:8rem; margin-bottom:15px; text-shadow:2px 2px 4px rgba(0,0,0,.3); }
+  .stat-card .stat-number { font-size:2rem; font-weight:700; margin-bottom:8px; }
+  .stat-card .stat-label { font-size:1.3rem; font-weight:600; }
+  @media (max-width: 992px) { .stats-grid { flex-wrap:wrap; } .stat-card { flex:1 1 45%; max-width:45%; margin-bottom:20px; } }
+  @media (max-width: 576px) { .stat-card { flex:1 1 100%; max-width:100%; } .stat-card .icon { font-size:3rem; } .stat-card .stat-number { font-size:1.8rem; } .stat-card .stat-label { font-size:1.2rem; } .stats-title { font-size:1.8rem; } }
+  @media (max-width: 768px) { .stat-card { flex:1 1 100%; max-width:100%; } }
 </style>
 
+{# AOS JS #}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js" integrity="sha512-GYb9U+q2b0w3lP9N1y6mTg9q3c6WmU6i2b1L0Q0t7B1Lwq1Q8TQn3Xo0g1oYvZ1jv3f8fMZ1vKpQ0p3y9b9HfQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 <script>
-  // Fungsi count up
-  function animateCount(el, duration = 2000) {
-    const target = +el.getAttribute('data-count');
-    let start = 0;
-    const stepTime = Math.abs(Math.floor(duration / target));
-    const timer = setInterval(() => {
-      start += 1;
-      el.textContent = start.toLocaleString();
-      if (start >= target) clearInterval(timer);
-    }, stepTime);
+(function() {
+  // Init AOS: replay saat scroll turun/naik
+  AOS.init({
+    once: false,       // animasi bisa berulang
+    mirror: true,      // animate saat scroll up juga
+    duration: 700,
+    easing: 'ease-out-cubic'
+  });
+
+  // Counter animasi dengan rAF (halus) + bisa diulang
+  function animateCount(el, duration) {
+    const target = +el.getAttribute('data-count') || 0;
+    if (target === 0) { el.textContent = '0'; return; }
+
+    // Batalkan animasi sebelumnya jika ada
+    if (el._rafId) cancelAnimationFrame(el._rafId);
+
+    const startTime = performance.now();
+    const fmt = new Intl.NumberFormat();
+
+    function tick(now) {
+      const p = Math.min(1, (now - startTime) / (duration || 1200));
+      const eased = 1 - Math.pow(1 - p, 3); // easeOutCubic
+      const val = Math.floor(eased * target);
+      el.textContent = fmt.format(val);
+      if (p < 1) {
+        el._rafId = requestAnimationFrame(tick);
+      } else {
+        el._rafId = null;
+      }
+    }
+    // Mulai dari 0 setiap kali terlihat
+    el.textContent = '0';
+    el._rafId = requestAnimationFrame(tick);
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.stat-number').forEach(el => animateCount(el));
-  });
+  // Observer: jalankan animasi setiap kali section/cards terlihat;
+  // reset ke 0 saat keluar supaya saat masuk lagi, animasi diulang.
+  const opts = { root: null, threshold: 0.35 };
+  const numbers = Array.from(document.querySelectorAll('#stats-section .stat-number'));
+
+  // Reset helper
+  function resetNumber(el) {
+    if (el._rafId) cancelAnimationFrame(el._rafId);
+    el.textContent = '0';
+    el._rafId = null;
+  }
+
+  // Observe setiap kartu agar animasi count sesuai visibilitasnya
+  const cardObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const num = entry.target.querySelector('.stat-number');
+      if (!num) return;
+      if (entry.isIntersecting) {
+        // visible → animate
+        animateCount(num, 1200);
+      } else {
+        // keluar viewport → reset supaya nanti animasi ulang
+        resetNumber(num);
+      }
+    });
+  }, opts);
+
+  document.querySelectorAll('#stats-section .stat-card').forEach(card => cardObserver.observe(card));
+
+  // Safety fallback untuk browser lama (tanpa IntersectionObserver)
+  if (!('IntersectionObserver' in window)) {
+    numbers.forEach(el => animateCount(el, 1200));
+  }
+})();
 </script>
