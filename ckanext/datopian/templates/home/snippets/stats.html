@@ -16,27 +16,27 @@
 </a>
 
 
-{% set total_groups = stats.group_count or 0 %}
+{% set stats = h.get_site_statistics() or {} %}
 
-{# hitung group yang DIAWALI 'Desa' (pakai 'desa ' kalau mau lebih ketat) #}
-{% set desa_group_count = h.ckanet_count_groups_startswith('desa', limit=5000) %}
+{# Hitung organisasi: total, 'Desa*', non-Desa #}
+{% set orgc = h.ckanet_org_counts('desa', 5000) %}
 
-{# OPD = total group - group 'Desa*' #}
-{% set opd_count = total_groups - desa_group_count %}
-{% if opd_count < 0 %}{% set opd_count = 0 %}{% endif %}
+{# Angka kartu #}
+{% set opd_count = orgc.non_desa %}
+{% set desa_count = orgc.desa %}
 
 
-<!-- OPD (non-'Desa*' berdasarkan Group) -->
-<a href="{{ h.url_for('group.index') }}" class="stat-card organization">
+<!-- OPD (non-'Desa*' berbasis Organisasi) -->
+<a href="{{ h.url_for('organization.index') }}" class="stat-card organization">
   <img src="/base/images/opd.png" alt="OPD Icon" class="icon" style="width:130px; height:130px;" />
   <div class="stat-number" data-count="{{ opd_count }}">0</div>
   <div class="stat-label">OPD Terhubung</div>
 </a>
 
-<!-- Desa (group diawali 'Desa') -->
-<a href="{{ h.url_for('group.index') ~ '?q=Desa' }}" class="stat-card desaku">
+<!-- Desa (organisasi diawali 'Desa') -->
+<a href="{{ h.url_for('organization.index') ~ '?q=Desa' }}" class="stat-card desaku">
   <img src="/base/images/desa.png" alt="Desa Icon" class="icon" style="width:130px; height:130px;" />
-  <div class="stat-number" data-count="{{ desa_group_count }}">0</div>
+  <div class="stat-number" data-count="{{ desa_count }}">0</div>
   <div class="stat-label">Desa Terhubung</div>
 </a>
 
