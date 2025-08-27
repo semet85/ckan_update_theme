@@ -1,7 +1,6 @@
 {% set stats = h.get_site_statistics() %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-{# AOS CSS #}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" integrity="sha512-pZ7S2TnYjvG6N6z0lAqkT9vQ0lJmC3h5xOqVn8Qn7pXG7c7k7y2Z+3wHc3zqV5yJk0Nz9r6n9jv8g8b1kzY4xA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 
 <div class="stats-wrapper" id="stats-section">
   <h2 class="stats-title text-center mb-4" data-aos="fade-up"> 
@@ -73,78 +72,92 @@
   @media (max-width: 768px) { .stat-card { flex:1 1 100%; max-width:100%; } }
 </style>
 
-{# AOS JS #}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js" integrity="sha512-GYb9U+q2b0w3lP9N1y6mTg9q3c6WmU6i2b1L0Q0t7B1Lwq1Q8TQn3Xo0g1oYvZ1jv3f8fMZ1vKpQ0p3y9b9HfQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script>
-(function() {
-  // Init AOS: replay saat scroll turun/naik
-  AOS.init({
-    once: false,       // animasi bisa berulang
-    mirror: true,      // animate saat scroll up juga
-    duration: 700,
-    easing: 'ease-out-cubic'
-  });
+(function () {
+  // Animasi angka yang halus + bisa diulang
+  function countTo(el, end, duration) {
+    end = parseInt(end, 10) || 0;
+    // Bersihkan animasi sebelumnya
+    if (el._raf) cancelAnimationFrame(el._raf);
 
-  // Counter animasi dengan rAF (halus) + bisa diulang
-  function animateCount(el, duration) {
-    const target = +el.getAttribute('data-count') || 0;
-    if (target === 0) { el.textContent = '0'; return; }
+    // Kalau target 0, langsung tampilkan 0
+    if (end === 0) { el.textContent = '0'; el._raf = null; return; }
 
-    // Batalkan animasi sebelumnya jika ada
-    if (el._rafId) cancelAnimationFrame(el._rafId);
+    var startTime = null;
+    el.textContent = '0';
 
-    const startTime = performance.now();
-    const fmt = new Intl.NumberFormat();
-
-    function tick(now) {
-      const p = Math.min(1, (now - startTime) / (duration || 1200));
-      const eased = 1 - Math.pow(1 - p, 3); // easeOutCubic
-      const val = Math.floor(eased * target);
-      el.textContent = fmt.format(val);
+    function step(ts) {
+      if (!startTime) startTime = ts;
+      var p = Math.min(1, (ts - startTime) / (duration || 1200));
+      // easeOutCubic
+      var eased = 1 - Math.pow(1 - p, 3);
+      var val = Math.floor(eased * end);
+      el.textContent = val.toLocaleString();
       if (p < 1) {
-        el._rafId = requestAnimationFrame(tick);
+        el._raf = requestAnimationFrame(step);
       } else {
-        el._rafId = null;
+        el._raf = null;
       }
     }
-    // Mulai dari 0 setiap kali terlihat
-    el.textContent = '0';
-    el._rafId = requestAnimationFrame(tick);
+    el._raf = requestAnimationFrame(step);
   }
 
-  // Observer: jalankan animasi setiap kali section/cards terlihat;
-  // reset ke 0 saat keluar supaya saat masuk lagi, animasi diulang.
-  const opts = { root: null, threshold: 0.35 };
-  const numbers = Array.from(document.querySelectorAll('#stats-section .stat-number'));
-
-  // Reset helper
   function resetNumber(el) {
-    if (el._rafId) cancelAnimationFrame(el._rafId);
+    if (!el) return;
+    if (el._raf) cancelAnimationFrame(el._raf);
     el.textContent = '0';
-    el._rafId = null;
+    el._raf = null;
   }
 
-  // Observe setiap kartu agar animasi count sesuai visibilitasnya
-  const cardObserver = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      const num = entry.target.querySelector('.stat-number');
-      if (!num) return;
-      if (entry.isIntersecting) {
-        // visible → animate
-        animateCount(num, 1200);
-      } else {
-        // keluar viewport → reset supaya nanti animasi ulang
-        resetNumber(num);
-      }
-    });
-  }, opts);
-
-  document.querySelectorAll('#stats-section .stat-card').forEach(card => cardObserver.observe(card));
-
-  // Safety fallback untuk browser lama (tanpa IntersectionObserver)
-  if (!('IntersectionObserver' in window)) {
-    numbers.forEach(el => animateCount(el, 1200));
+  function onEnter(card) {
+    var num = card.querySelector('.stat-number');
+    if (!num) return;
+    countTo(num, num.getAttribute('data-count'), 1200);
   }
+
+  function onExit(card) {
+    var num = card.querySelector('.stat-number');
+    if (!num) return;
+    resetNumber(num);
+  }
+
+  function visibleNow(card) {
+    var rect = card.getBoundingClientRect();
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    return rect.top < vh * 0.9 && rect.bottom > vh * 0.1;
+  }
+
+  function setupCounters() {
+    var cards = Array.prototype.slice.call(document.querySelectorAll('.stats-wrapper .stat-card'));
+    if (!cards.length) return;
+
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (ent) {
+          if (ent.isIntersecting) onEnter(ent.target);
+          else onExit(ent.target);
+        });
+      }, { threshold: 0.35, rootMargin: '0px 0px -10% 0px' });
+
+      cards.forEach(function (c) { io.observe(c); });
+
+      // Kickstart: kalau sudah kelihatan sebelum observer attach
+      setTimeout(function () {
+        cards.forEach(function (c) { if (visibleNow(c)) onEnter(c); });
+      }, 50);
+    } else {
+      // Fallback tanpa IO: animate saat load & tiap scroll/resize sederhana
+      function tickAll() { cards.forEach(function (c) { if (visibleNow(c)) onEnter(c); else onExit(c); }); }
+      tickAll();
+      window.addEventListener('scroll', tickAll, { passive: true });
+      window.addEventListener('resize', tickAll);
+    }
+  }
+
+  // Jalankan saat DOM siap
+  if (document.readyState !== 'loading') setupCounters();
+  else document.addEventListener('DOMContentLoaded', setupCounters);
 })();
 </script>
+
