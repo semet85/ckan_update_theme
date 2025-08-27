@@ -15,34 +15,31 @@
   </div>
 </a>
 
-{# --- Ambil featured organizations & hitung Desa vs non-Desa --- #}
-{% set orgs = h.get_featured_organizations() or [] %}
+{% set stats = h.get_site_statistics() or {} %}
+{% set total_groups = stats.group_count or 0 %}
 
-{% set ns = namespace(desa=0, non_desa=0) %}
-{% for o in orgs %}
-  {% set t = (o.title or o.name or '') %}
-  {% if t and (t|lower).startswith('desa') %}   {# gunakan 'desa ' (pakai spasi) kalau ingin ketat #}
-    {% set ns.desa = ns.desa + 1 %}
-  {% else %}
-    {% set ns.non_desa = ns.non_desa + 1 %}
-  {% endif %}
-{% endfor %}
-{% set desa_count = ns.desa %}
-{% set opd_non_desa_count = ns.non_desa %}
+{# hitung group yang DIAWALI 'Desa' (pakai 'desa ' kalau mau lebih ketat) #}
+{% set desa_group_count = h.ckanet_count_groups_startswith('desa', limit=5000) %}
 
-<!-- Organisasi (OPD) non-Desa - dari featured orgs -->
-<a href="{{ h.url_for('organization.index') }}" class="stat-card organization">
-  <img src="/base/images/opd.png" alt="Organisasi Icon" class="icon" style="width:130px; height:130px;" />
-  <div class="stat-number" data-count="{{ opd_non_desa_count }}">0</div>
+{# OPD = total group - group 'Desa*' #}
+{% set opd_count = total_groups - desa_group_count %}
+{% if opd_count < 0 %}{% set opd_count = 0 %}{% endif %}
+
+
+<!-- OPD (non-'Desa*' berdasarkan Group) -->
+<a href="{{ h.url_for('group.index') }}" class="stat-card organization">
+  <img src="/base/images/opd.png" alt="OPD Icon" class="icon" style="width:130px; height:130px;" />
+  <div class="stat-number" data-count="{{ opd_count }}">0</div>
   <div class="stat-label">OPD Terhubung</div>
 </a>
 
-<!-- Desa Terhubung - dari featured orgs -->
-<a href="{{ h.url_for('organization.index') ~ '?q=Desa' }}" class="stat-card desaku">
+<!-- Desa (group diawali 'Desa') -->
+<a href="{{ h.url_for('group.index') ~ '?q=Desa' }}" class="stat-card desaku">
   <img src="/base/images/desa.png" alt="Desa Icon" class="icon" style="width:130px; height:130px;" />
-  <div class="stat-number" data-count="{{ desa_count }}">0</div>
+  <div class="stat-number" data-count="{{ desa_group_count }}">0</div>
   <div class="stat-label">Desa Terhubung</div>
 </a>
+
 
 <!-- Kategori Card -->
 <a href="{{ h.url_for('group.index') }}" class="stat-card category">
