@@ -52,11 +52,11 @@
                         </ul>
                     </li>
               </ul>    
-            {% else %}
-                    <li>{% link_for _('Login'), named_route='user.login' %}</li>
-              {% endif %}     
+                
          </ul>
-
+         {% else %}
+                    <li>{% link_for _('Login'), named_route='user.login' %}</li>
+              {% endif %}
         
     </nav>
 </div>
