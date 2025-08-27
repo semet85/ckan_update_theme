@@ -15,19 +15,11 @@
   </div>
 </a>
 
-{# Hitung jumlah organisasi yang namanya/title diawali "Desa" (case-insensitive) #}
-{% set orgs = h.call_action('organization_list', {'all_fields': True, 'limit': 5000}) %}
-{% set ns = namespace(desa=0) %}
-{% for o in orgs %}
-  {% set t = (o.title or o.name or '') %}
-  {% if t and t.lower().startswith('desa') %}
-    {% set ns.desa = ns.desa + 1 %}
-  {% endif %}
-{% endfor %}
-{% set desa_count = ns.desa %}
-
-{# OPD non-Desa = total organisasi - organisasi "Desa*" #}
-{% set opd_non_desa_count = (stats.organization_count or 0) - desa_count %}
+{# ===== Hitung Desa & OPD non-Desa (pakai helper ekstensi) ===== #}
+{# Ganti 'desa ' (pakai spasi) kalau mau lebih ketat; atau 'desa' (tanpa spasi) untuk awalan apapun #}
+{% set desa_count = h.ckanet_count_orgs_startswith('desa', field='title', limit=5000) %}
+{% set total_org = stats.organization_count or 0 %}
+{% set opd_non_desa_count = total_org - desa_count %}
 {% if opd_non_desa_count < 0 %}{% set opd_non_desa_count = 0 %}{% endif %}
 
 <!-- Organisasi (OPD) non-Desa -->
@@ -37,24 +29,13 @@
   <div class="stat-label">OPD Terhubung</div>
 </a>
 
-{# Hitung organisasi yang title/name diawali "Desa" (case-insensitive) #}
-{% set orgs = h.call_action('organization_list', {'all_fields': True, 'limit': 1000}) %}
-{% set ns = namespace(cnt=0) %}
-{% for o in orgs %}
-  {% set t = (o.title or o.name or '') %}
-  {% if t and t.lower().startswith('desa') %}
-    {% set ns.cnt = ns.cnt + 1 %}
-  {% endif %}
-{% endfor %}
-{% set desa_count = ns.cnt %}
-
-
-<!-- Desa Card (org name startswith "Desa") -->
+<!-- Desa Card (org title/name startswith "Desa") -->
 <a href="{{ h.url_for('organization.index') ~ '?q=Desa' }}" class="stat-card desaku">
   <img src="/base/images/desa.png" alt="Desa Icon" class="icon" style="width:130px; height:130px;" />
   <div class="stat-number" data-count="{{ desa_count }}">0</div>
   <div class="stat-label">Desa Terhubung</div>
 </a>
+
 
 <!-- Kategori Card -->
 <a href="{{ h.url_for('group.index') }}" class="stat-card category">
