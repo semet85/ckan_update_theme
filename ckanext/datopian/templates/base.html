@@ -133,6 +133,22 @@
     {%- block scripts %}
     {% endblock -%}
 
+    {# templates/base.html dalam tema Datopian Anda #}
+      {% ckan_extends %}
+
+      {% block scripts %}
+        {{ super() }}
+        {# tampilkan modal hanya di homepage #}
+        {% if request.endpoint == 'home.index' or request.path == h.url_for('home.index') %}
+          {% snippet 'home/snippets/modal_image.html',
+            modal_id='promoImageModal',
+            image_url='/base/images/bupati.png',
+            alt='Selamat Datang di Satu Data ORAS'
+          %}
+        {% endif %}
+      {% endblock %}
+
+
     {% block body_extras -%}
       {# defined in the config.ini under "ckan.template_footer_end" #}
       {{ g.template_footer_end | safe }}

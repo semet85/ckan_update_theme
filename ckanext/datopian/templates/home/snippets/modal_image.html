@@ -3,7 +3,8 @@
 {% set _img  = image_url or '/base/images/popup.jpg' %}
 {% set _alt  = alt or 'Promosi' %}
 
-<div id="{{ _id }}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="{{ _id }}Label">
+<div id="{{ _id }}" class="modal fade" tabindex="-1" role="dialog"
+     data-backdrop="static" data-keyboard="false" aria-labelledby="{{ _id }}Label">
   <div class="modal-dialog modal-lg" role="document" style="margin-top:40px;">
     <div class="modal-content" style="border-radius:10px; overflow:hidden; border:0;">
       <button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Tutup') }}"
@@ -18,45 +19,43 @@
 
 <script>
 (function(){
-  function onReady(fn){ if(document.readyState !== 'loading') fn(); else document.addEventListener('DOMContentLoaded', fn); }
+  var modalId = '{{ _id }}';
+  var homeURL = "{{ h.url_for('home.index') }}";
+  var $ = window.jQuery || window.$;
 
-  onReady(function(){
-    var modalId = '{{ _id }}';
-    var homeURL = "{{ h.url_for('home.index') }}";
-    var el = document.getElementById(modalId);
-    var img = document.getElementById(modalId + '__img');
+  function goHome(e){
+    // cegah Bootstrap menutup modal dulu — langsung redirect
+    if (e && typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
+    window.location.href = homeURL;
+  }
 
-    function goHome(){
-      window.location.href = homeURL;
+  function bindGlobalHandlers(){
+    // Tangkap SEMUA interaksi lebih awal (capturing) agar tidak “ditelan”
+    window.addEventListener('click',      goHome, {once:true, capture:true});
+    window.addEventListener('touchstart', goHome, {once:true, capture:true});
+    window.addEventListener('keydown',    goHome, {once:true, capture:true});
+
+    // Jaga-jaga: klik spesifik pada modal & gambar
+    var modalEl = document.getElementById(modalId);
+    var imgEl   = document.getElementById(modalId + '__img');
+    if (modalEl) modalEl.addEventListener('click', goHome, {once:true, capture:true});
+    if (imgEl)   imgEl.addEventListener('click',   goHome, {once:true});
+  }
+
+  function showModal(){
+    bindGlobalHandlers();
+    // Tampilkan modal setelah handler sudah aktif
+    if ($ && $.fn && $.fn.modal) {
+      $('#' + modalId).modal({backdrop:'static', keyboard:false}).modal('show');
+    } else {
+      // fallback kalau bootstrap tidak tersedia (hampir pasti ada di CKAN 2.9)
+      var el = document.getElementById(modalId);
+      if (el) { el.style.display = 'block'; el.style.opacity = 1; el.style.zIndex = 9999; }
     }
+  }
 
-    // Pastikan Bootstrap modal tersedia (CKAN 2.9 pakai Bootstrap 3)
-    if (el && typeof jQuery !== 'undefined' && jQuery.fn.modal) {
-      var $el = jQuery(el);
-
-      // Tampilkan modal setiap load. backdrop 'static' agar klik tidak menutup modal terlebih dulu
-      $el.modal({backdrop:'static', keyboard:false, show:true});
-
-      // Saat modal ditampilkan, pasang listener global
-      $el.on('shown.bs.modal', function(){
-        // Klik di mana saja pada dokumen -> redirect
-        document.addEventListener('click', goHome, {once:true, capture:true});
-        // Sentuh layar (mobile) -> redirect
-        document.addEventListener('touchstart', goHome, {once:true, capture:true});
-        // Tekan tombol apa pun -> redirect
-        document.addEventListener('keydown', goHome, {once:true, capture:true});
-        // Klik pada gambar (ekspisit)
-        if (img) img.addEventListener('click', goHome, {once:true});
-      });
-
-      // Jika modal “disembunyikan” (jarang terjadi, karena kita redirect dulu), bersihkan listener
-      $el.on('hidden.bs.modal', function(){
-        document.removeEventListener('click', goHome, true);
-        document.removeEventListener('touchstart', goHome, true);
-        document.removeEventListener('keydown', goHome, true);
-        if (img) img.removeEventListener('click', goHome, true);
-      });
-    }
-  });
+  if (document.readyState !== 'loading') showModal();
+  else document.addEventListener('DOMContentLoaded', showModal);
 })();
 </script>
