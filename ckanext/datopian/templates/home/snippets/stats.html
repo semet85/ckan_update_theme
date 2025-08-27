@@ -72,6 +72,15 @@
   @media (max-width: 768px) { .stat-card { flex:1 1 100%; max-width:100%; } }
 </style>
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.AOS) {
+      AOS.init({ once: false, mirror: true, duration: 700, easing: 'ease-out-cubic' });
+    }
+  });
+</script>
 
 <script>
 (function () {
