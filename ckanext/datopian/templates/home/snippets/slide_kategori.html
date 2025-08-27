@@ -1,7 +1,9 @@
-{% block group_list %}
+{# ==== SLIDE KATEGORI (non-insight) ==== #}
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-<h2 class="text-center mb-4"> <i class="fas fa-folder-open"></i> Topik Data</h2>
+<h2 class="text-center mb-4"><i class="fas fa-folder-open"></i> Topik Data</h2>
+
 {# Ambil featured groups #}
 {% set groups = h.get_featured_groups(count=15) %}
 
@@ -17,7 +19,7 @@
 {% if not groups %}
   <p class="text-center">{{ _('Tidak ada kategori non-insight yang ditemukan.') }}</p>
 {% else %}
-<div class="carousel-container">
+<div class="carousel-container carousel-container--groups">
   <div class="group-carousel">
     <div class="carousel-track-wrapper">
       <div class="carousel-track">
@@ -26,19 +28,25 @@
         {% for group in groups %}
         <div class="group-card">
           <a href="{{ h.url_for('group.read', id=group.name) }}">
-            <img src="{{ group.image_display_url or h.url_for_static('/base/images/placeholder-group.png') }}"
-                 alt="{{ group.title }}">
+            <img
+              src="{{ group.image_display_url or h.url_for_static('/base/images/placeholder-group.png') }}"
+              alt="{{ group.title }}"
+              loading="lazy"
+            >
             <h5>{{ group.title }}</h5>
           </a>
         </div>
         {% endfor %}
 
-        {# Duplikasi untuk efek infinite scroll (pakai list yang sama, sudah tersaring) #}
+        {# Duplikasi untuk efek infinite scroll (pakai list yang sama) #}
         {% for group in groups %}
         <div class="group-card">
           <a href="{{ h.url_for('group.read', id=group.name) }}">
-            <img src="{{ group.image_display_url or h.url_for_static('/base/images/placeholder-group.png') }}"
-                 alt="{{ group.title }}">
+            <img
+              src="{{ group.image_display_url or h.url_for_static('/base/images/placeholder-group.png') }}"
+              alt="{{ group.title }}"
+              loading="lazy"
+            >
             <h5>{{ group.title }}</h5>
           </a>
         </div>
@@ -47,165 +55,22 @@
       </div>
     </div>
   </div>
-</div>
-{% endif %}
 
-
-  <!-- Tombol carousel -->
-  <button class="carousel-btn left-btn">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-      <path d="m12 19-7-7 7-7"></path>
-      <path d="M19 12H5"></path>
-    </svg>
-    <span class="sr-only">Previous slide</span>
+  {# Tombol carousel di dalam container agar posisinya relatif #}
+  <button class="carousel-btn left-btn" aria-label="Sebelumnya">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
   </button>
-
-  <button class="carousel-btn right-btn">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-      <path d="m12 5 7 7-7 7"></path>
-      <path d="M5 12h14"></path>
-    </svg>
-    <span class="sr-only">Next slide</span>
+  <button class="carousel-btn right-btn" aria-label="Berikutnya">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 5 7 7-7 7"/><path d="M5 12h14"/></svg>
   </button>
 </div>
 {% endif %}
 
 <style>
-.carousel-container {
-  position: relative; /* Tombol absolute akan relatif ke sini */
-}
+  .carousel-container{ position:relative; }
+  .group-carousel{ overflow:hidden; width:100%; position:relative; }
+  .carousel-track-wrapper{ overflow:hidden; }
+  .carousel-track{ display:flex; transition: transform 0.5s linear; will-change: transform; }
 
-.group-carousel {
-  overflow: hidden;
-  width: 100%;
-  position: relative;
-}
-
-.carousel-track-wrapper {
-  overflow: hidden;
-}
-
-.carousel-track {
-  display: flex;
-  transition: transform 0.5s linear;
-}
-
-.group-card {
-  min-width: 200px;
-  margin: 0 10px;
-  text-align: center;
-  flex-shrink: 0;
-  border-radius: 5px;
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.group-card img {
-  width: 100%;
-  height: 220px;
-  object-fit: cover;
-  display: block;
-}
-
-/* Hover shadow */
-.group-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-}
-
-/* Tombol carousel */
-.carousel-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  height: 5rem;
-  width: 5rem;
-  border-radius: 9999px;
-  background: var(--background, #fff);
-  border: 1px solid var(--input, #ccc);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-  z-index: 50;
-}
-
-.carousel-btn svg {
-  pointer-events: none;
-  width: 3rem;
-  height: 3rem;
-  flex-shrink: 0;
-}
-
-.carousel-btn:hover {
-  background: var(--accent, #5c5b5b);
-  color: var(--accent-foreground, #000);
-  transform: translateY(-50%) scale(1.1); /* sedikit membesar saat hover */
-}
-
-/* Tombol keluar carousel */
-.left-btn { left: -7rem; }
-.right-btn { right: -7rem; }
-
-/* Responsive */
-@media(max-width: 768px) {
-  .group-card { min-width: 150px; }
-}
-@media(max-width: 640px) {
-  .carousel-btn { display: none; }
-}
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const track = document.querySelector('.carousel-track');
-  const cards = document.querySelectorAll('.group-card');
-  const leftBtn = document.querySelector('.left-btn');
-  const rightBtn = document.querySelector('.right-btn');
-  const totalCards = cards.length;
-  let index = 0;
-  let autoSlide;
-
-  function moveTrack() {
-    const cardWidth = cards[0].offsetWidth + 20;
-    track.style.transform = `translateX(${-cardWidth * index}px)`;
-  }
-
-  function startAutoSlide() {
-    autoSlide = setInterval(() => {
-      index++;
-      if(index >= totalCards / 2) index = 0;
-      moveTrack();
-    }, 3000);
-  }
-
-  function resetAutoSlide() {
-    clearInterval(autoSlide);
-    startAutoSlide();
-  }
-
-  leftBtn.addEventListener('click', () => {
-    index--;
-    if(index < 0) index = (totalCards / 2) - 1;
-    moveTrack();
-    resetAutoSlide();
-  });
-
-  rightBtn.addEventListener('click', () => {
-    index++;
-    if(index >= totalCards / 2) index = 0;
-    moveTrack();
-    resetAutoSlide();
-  });
-
-  track.parentElement.addEventListener('mouseenter', () => clearInterval(autoSlide));
-  track.parentElement.addEventListener('mouseleave', startAutoSlide);
-
-  moveTrack();
-  startAutoSlide();
-  window.addEventListener('resize', moveTrack);
-});
-</script>
-{% endblock %}
+  .group-card{
+    min-wi
