@@ -3,8 +3,8 @@
 
 <div class="module module-search module-narrow module-shallow box">
   <form class="module-content search-form" method="get" action="{% url_for 'dataset.search' %}">
-    <h3 class="heading">{{ _("Mau cari Data Apa?") }}</h3>
-    <h5 class="heading" style="font-size: large;">{{ _("Mudah, praktis dan akurat") }}</h5>
+    <h3 class="heading" style="color: #fff;">{{ _("Mau cari Data Apa?") }}</h3>
+    <h5 class="heading" style="font-size: large; color: #fff;">{{ _("Mudah, praktis dan akurat") }}</h5>
     <div class="search-input form-group search-giant">
       <input aria-label="{% block header_site_search_label %}{{ _('Cari datasets') }}{% endblock %}" id="field-main-search" type="text" class="form-control" name="q" value="" autocomplete="off" placeholder="{% block search_placeholder %}{{ placeholder }}{% endblock %}" />
       <button type="submit" aria-labelledby="search-label">
@@ -15,4 +15,9 @@
   </form>
 </div>
 
-
+<style>
+  .stroked-text {
+    -webkit-text-stroke: 1px #000; /* garis tepi hitam */
+    text-stroke: 1px #000; /* untuk browser yang support */
+  }
+</style>
